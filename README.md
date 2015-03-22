@@ -1,0 +1,3 @@
+visular is a javascript diagramming solution based on AngularJS
+
+it provides you with a set of directives and services...

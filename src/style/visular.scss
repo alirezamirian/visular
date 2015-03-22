@@ -1,0 +1,52 @@
+
+
+vz-designer{
+  display: block;
+  position: relative;
+}
+vz-designer svg{
+  width: 100%;
+  min-height: 100%;
+  display: inline-block;
+}
+
+.vz-selected-item-overlay{
+  width: 100px;
+  height: 80px;
+  position: absolute;
+//  z-index: -1;
+}
+
+vz-resize-handle{
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+vz-resize-handle[vz-overlay-handle="bottom right"]{
+  cursor: nwse-resize;
+}
+[vz-overlay-handle]{
+  position: absolute;
+}
+[vz-overlay-handle="bottom right"]{
+  bottom: 0;
+  right: 0;
+  transform: translateX(50%) translateY(50%);
+}
+
+
+
+.vz-guideline{
+  position: absolute;
+  pointer-events: none;
+  border: 0 dashed #5bbba4;
+}
+.vz-guideline-h{
+  border-top-width: 1px;
+  width: 100%;
+}
+.vz-guideline-v{
+  border-left-width: 1px;
+  height: 100%;
+}
