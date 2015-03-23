@@ -41,11 +41,11 @@ var config = {
     ' * v' + VERSION + '\n' +
     ' */\n',
     jsFiles: [
-        'src/js/**/*.js',
-        '!src/js/**/*.spec.js'
+        'src/modules/**/*.js',
+        '!src/modules/**/*.spec.js'
     ],
     scssFiles: [
-        'src/style/*.scss',
+        'src/modules/**/*.scss',
     ],
     outputDir: 'dist/visular-' + VERSION
 };
@@ -62,6 +62,7 @@ function buildScss(do_minification) {
         .pipe(sass())
         .pipe(autoprefix())
         .pipe(insert.prepend(config.banner))
+        .pipe(concat('visular.css'))
         .pipe(gulp.dest(config.outputDir))
         .pipe(gulpif(do_minification, lazypipe()
                 .pipe(minifyCss)

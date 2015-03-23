@@ -34,19 +34,3 @@ vz-resize-handle[vz-overlay-handle="bottom right"]{
   right: 0;
   transform: translateX(50%) translateY(50%);
 }
-
-
-
-.vz-guideline{
-  position: absolute;
-  pointer-events: none;
-  border: 0 dashed #5bbba4;
-}
-.vz-guideline-h{
-  border-top-width: 1px;
-  width: 100%;
-}
-.vz-guideline-v{
-  border-left-width: 1px;
-  height: 100%;
-}
