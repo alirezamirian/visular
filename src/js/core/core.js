@@ -4,7 +4,7 @@
  */
 
 
-angular.module("visular.core",['visular.guideline', 'visular.config'])
+angular.module("visular.core",['visular.config'])
 
     .value("VZ_THRESHOLD",0.001)
 
@@ -69,7 +69,7 @@ angular.module("visular.core",['visular.guideline', 'visular.config'])
             }
         }
     })
-    .directive("vzDesigner", function(){
+    .directive("vzDesigner", function($compile){
         return{
             restrict: "E",
             scope:{
@@ -89,14 +89,9 @@ angular.module("visular.core",['visular.guideline', 'visular.config'])
             '       width: selectedItem.size.width || 1,' +
             '       height: selectedItem.size.height || 1}">' +
             '   <vz-resize-handle vz-overlay-handle="bottom right"></vz-resize-handle>' +
-            '</div>' +
-            '<div class="vz-guideline"' +
-            '   ng-repeat="guideline in guidelines"' +
-            '   ng-class="guideline.isHorizontal() ? \'vz-guideline-h\' : \'vz-guideline-v\'"' +
-            '   ng-style="{' +
-            '       top: guideline.isHorizontal() ? guideline.level : 0,' +
-            '       left: !guideline.isHorizontal() ? guideline.level : 0}"></div>',
+            '</div>',
             controller: function($element, $scope){
+                var dragInterceptors = [];
                 this.elem = $element;
                 this.diagram = $scope.diagram;
                 this.bringToFront = function(elementModel){
@@ -112,11 +107,40 @@ angular.module("visular.core",['visular.guideline', 'visular.config'])
                 this.select = function(elementModel){
                     $scope.selectedItem = elementModel;
                 };
-                this.isGuidelinesEnabled = function(){
-                    return true;
+
+                this.drag = {
+                    started: function(draggingElement, mouseEvent){
+                        dragInterceptors.forEach(function(item){
+                            item.dragStartHandler(draggingElement, mouseEvent);
+                        });
+                    },
+                    finished: function(draggingElement, mouseEvent){
+                        dragInterceptors.forEach(function(item){
+                            item.dragFinishHandler(draggingElement, mouseEvent);
+                        });
+                    },
+                    to: function(pos, draggingElement, mouseEvent){
+                        var interceptedPos = pos;
+                        dragInterceptors.forEach(function(item){
+                            interceptedPos = item.interceptor(interceptedPos, draggingElement, mouseEvent);
+                        });
+                        draggingElement.position.x = interceptedPos.x;
+                        draggingElement.position.y = interceptedPos.y;
+                    }
                 }
-                this.setGuidelines = function(guidelines){
-                    $scope.guidelines = guidelines || [];
+
+                this.addElementDragInterceptor = function(dragInterceptor, dragStartHandler, dragFinishHandler){
+                    dragInterceptors.push({
+                        interceptor: dragInterceptor || angular.identity,
+                        dragStartHandler: dragStartHandler || angular.noop,
+                        dragFinishHandler: dragFinishHandler || angular.noop
+                    })
+                }
+                this.addOverlay = function(overlayHtml){
+                    var overlayScope = $scope.$new();
+                    var overlay = angular.element(overlayHtml).appendTo($element);
+                    $compile(overlay)(overlayScope);
+                    return overlayScope;
                 }
             }
         }
@@ -192,7 +216,7 @@ angular.module("visular.core",['visular.guideline', 'visular.config'])
         }
     })
 
-    .directive("vzElement", function(vzConfig, $document, VZ_THRESHOLD, VzGuideline){
+    .directive("vzElement", function(vzConfig, $document, VZ_THRESHOLD){
         return{
             restrict: "A",
             require: '^vzDesigner',
@@ -261,17 +285,8 @@ angular.module("visular.core",['visular.guideline', 'visular.config'])
                         scope.$apply(function(){
                             var x = evt.pageX - draggable.startPos.x - draggable.designerOffset.left,
                                 y = evt.pageY - draggable.startPos.y - draggable.designerOffset.top;
-                            if(designerController.isGuidelinesEnabled()){
-                                draggable.guidelineModel.moveTargetToPosition(g.point(x,y));
-                            }
-                            if(designerController.isGuidelinesEnabled() && !evt.ctrlKey){
-                                scope.model.position.x = draggable.guidelineModel.guidedTargetRect.x;
-                                scope.model.position.y = draggable.guidelineModel.guidedTargetRect.y;
-                            }
-                            else{
-                                scope.model.position.x = x;
-                                scope.model.position.y = y;
-                            }
+
+                            designerController.drag.to(g.point(x,y), scope.model, evt);
                         });
                     },
                     mousedown: function(evt){
@@ -279,40 +294,21 @@ angular.module("visular.core",['visular.guideline', 'visular.config'])
                         draggable.startPos.x = evt.pageX - elem.position().left;
                         draggable.startPos.y = evt.pageY - elem.position().top;
 
-
-                        if(designerController.isGuidelinesEnabled()){
-                            function otherRectsFilter(elementModel){
-                                return elementModel != scope.model;
-                            }
-                            function elementModelToRect(elementModel){
-                                return elementModel.getBBox();
-                            }
-                            draggable.guidelineModel =  VzGuideline.create(
-                                g.rect(0,0,designerController.elem.width(), designerController.elem.height()),
-                                designerController.diagram.elements.filter(otherRectsFilter).map(elementModelToRect),
-                                scope.model.getBBox()
-                            );
-                            designerController.setGuidelines(draggable.guidelineModel.activeGuidelines);
-                        }
-                        else{
-                            designerController.setGuidelines(null);
-                        }
+                        scope.$apply(function(){
+                            designerController.drag.started(scope.model, evt);
+                        });
 
                         $document.bind("mousemove", draggable.mousemove);
                         $document.one("mouseup", function(){
-                            if(draggable.guidelineModel) {
-                                scope.$apply(function(){
-                                    delete draggable.guidelineModel;
-                                    designerController.setGuidelines(null);
-                                })
-                            }
+                            scope.$apply(function(){
+                                designerController.drag.finished(scope.model, evt);
+                            });
                             $document.unbind("mousemove", draggable.mousemove);
                         });
                         return false;
                     },
                     init: function(){
                         elem.bind("mousedown", draggable.mousedown);
-
                         scope.$on("$destroy", function(){
                             elem.unbind("mousedown", draggable.mousedown)
                         })

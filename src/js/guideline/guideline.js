@@ -5,7 +5,53 @@
 
 
 angular.module("visular.guideline", [])
-    .factory("VzGuideline", function(){
+
+
+    .directive("vzGuideline", function vzGuidelineDirective(VzGuidelineFactory){
+        var overlayTemplate =
+            '<div class="vz-guideline"' +
+            '   ng-repeat="guideline in guidelines"' +
+            '   ng-class="guideline.isHorizontal() ? \'vz-guideline-h\' : \'vz-guideline-v\'"' +
+            '   ng-style="{' +
+            '       top: guideline.isHorizontal() ? guideline.level : 0,' +
+            '       left: !guideline.isHorizontal() ? guideline.level : 0}"></div>';
+        return{
+            restrict: "A",
+            require: "vzDesigner",
+            link: function(){
+                var designerController = arguments[arguments.length-2],
+                    scope = designerController.addOverlay(overlayTemplate);
+
+                var guidelineSystem = null;
+                function dragStarted(element){
+                    function otherRectsFilter(elementModel){
+                        return elementModel != element;
+                    }
+                    function elementModelToRect(elementModel){
+                        return elementModel.getBBox();
+                    }
+                    guidelineSystem = VzGuidelineFactory.create(
+                        g.rect(0,0,designerController.elem.width(), designerController.elem.height()),
+                        designerController.diagram.elements.filter(otherRectsFilter).map(elementModelToRect),
+                        element.getBBox()
+                    );
+                    scope.guidelines = guidelineSystem.activeGuidelines;
+                }
+                function dragFinished(){
+                    delete guidelineSystem;
+                    scope.guidelines = [];
+                }
+                function dragInterceptor(pointToMove, draggingElement){
+                    guidelineSystem.moveTargetToPosition(pointToMove);
+                    return guidelineSystem.guidedTargetRect.origin();
+                }
+                designerController
+                    .addElementDragInterceptor(
+                    dragInterceptor, dragStarted, dragFinished);
+            }
+        }
+    })
+    .factory("VzGuidelineFactory", function(){
         var Guideline = {
             create: function(containerRect, otherRects, targetRect){
                 return new GuidelineSystemModel(containerRect, otherRects, targetRect);
@@ -45,11 +91,10 @@ angular.module("visular.guideline", [])
                 guidelines.push(new GuidelineModel(Guideline.Types.TOP, rect.y));
                 guidelines.push(new GuidelineModel(Guideline.Types.BOTTOM, rect.y+rect.height));
 
-                guidelines.push(new GuidelineModel(Guideline.Types.V_MIDDLE, rect.width/2));
+                guidelines.push(new GuidelineModel(Guideline.Types.V_MIDDLE, rect.x+rect.width/2));
                 guidelines.push(new GuidelineModel(Guideline.Types.LEFT, rect.x));
                 guidelines.push(new GuidelineModel(Guideline.Types.RIGHT, rect.x+rect.width));
             });
-
 
             targetRect = angular.copy(targetRect);
             this.guidedTargetRect = angular.copy(targetRect);

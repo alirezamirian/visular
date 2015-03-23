@@ -19,6 +19,7 @@ angular.module("demoApp", ['visular'])
         ];
         elems[0].position.x = 100;
         elems[0].position.y = 200;
+        elems[0].size.width = 300;
         elems[0].name = "test1";
         elems[1].name = "test2";
 
