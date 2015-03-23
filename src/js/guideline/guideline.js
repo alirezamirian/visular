@@ -30,6 +30,10 @@ angular.module("visular.guideline", [])
                     function elementModelToRect(elementModel){
                         return elementModel.getBBox();
                     }
+
+                    /**
+                     * TODO: elements can be filtered to a smaller set that are at least in viewport
+                     */
                     guidelineSystem = VzGuidelineFactory.create(
                         g.rect(0,0,designerController.elem.width(), designerController.elem.height()),
                         designerController.diagram.elements.filter(otherRectsFilter).map(elementModelToRect),
@@ -112,6 +116,11 @@ angular.module("visular.guideline", [])
                      continue;
                      if( vMatch && !guideline.isHorizontal())
                      continue;*/
+                    /**
+                     * TODO: now if more than one guideline matches, the element will stick to the one
+                     * that is upper in the switch case! the selected guideline can be changed to the
+                     * one that deserves it the most (the nearest one)!
+                     */
 
                     switch(guideline.type){
                         case Guideline.Types.H_MIDDLE:
