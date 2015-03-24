@@ -282,7 +282,7 @@ angular.module("visular.core",['visular.config'])
                     })
                     .onDrag(function(evt){
                         designerController.drag
-                            .to(g.point(this.elementMovement.x,this.elementMovement.y), scope.model, evt);
+                            .to(g.point(this.draggedPosition.x,this.draggedPosition.y), scope.model, evt);
                     });
             }
         }
@@ -323,6 +323,8 @@ angular.module("visular.core",['visular.config'])
                     y: _this.startPosition.y - domElem.position().top
                 }
                 containerOffset = containerDomElem.offset();
+                containerOffset.bottom = containerOffset.top + containerDomElem.height();
+                containerOffset.right = containerOffset.left + containerDomElem.width();
                 if(angular.isFunction(onDragStart)){
                     scope.$apply(function(){
                         onDragStart.call(_this, evt);
@@ -344,14 +346,14 @@ angular.module("visular.core",['visular.config'])
                     x: evt.pageX,
                     y: evt.pageY
                 };
-                _this.elementMovement = {
-                    /**
-                     * TODO: simplify calculation if possible
-                     */
-                    x: Math.min(Math.max(evt.pageX,containerOffset.left), containerDomElem.width() + containerOffset.left)
-                    - _this.localOffset.x - containerOffset.left,
-                    y: Math.min(Math.max(evt.pageY,containerOffset.top), containerDomElem.height()+ containerOffset.top)
-                    - _this.localOffset.y - containerOffset.top
+                /**
+                 * TODO: simplify calculation if possible
+                 */
+                var pageXLimitedToContainer = Math.min(Math.max(evt.pageX,containerOffset.left), containerOffset.right)
+                var pageYLimitedToContainer = Math.min(Math.max(evt.pageY,containerOffset.top), containerOffset.bottom);
+                _this.draggedPosition = {
+                    x: pageXLimitedToContainer - _this.localOffset.x - containerOffset.left,
+                    y: pageYLimitedToContainer - _this.localOffset.y - containerOffset.top
                 };
                 if(angular.isFunction(onDrag)){
                     scope.$apply(function(){
