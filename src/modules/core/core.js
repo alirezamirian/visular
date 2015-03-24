@@ -60,12 +60,26 @@ angular.module("visular.core",['visular.config'])
         }
     })
 
-    .directive("vzResizeHandle", function(){
+    .directive("vzResizeHandle", function($document){
         return{
             restrict: "E",
             require: "^vzDesigner",
             link: function(scope, elem){
 
+                function mousemove(evt){
+
+                }
+                function mousedown(){
+                    $document.bind("mousemove", mousemove);
+                    $document.one("mouseup", mouseup);
+                }
+                function mouseup(){
+                    $document.unbind("mousemove", mousemove);
+                }
+                elem.bind("mousedown", mousedown);
+                scope.$on("$destroy", function(){
+                    elem.unbind("mousedown");
+                })
             }
         }
     })
@@ -216,7 +230,7 @@ angular.module("visular.core",['visular.config'])
         }
     })
 
-    .directive("vzElement", function(vzConfig, $document, VZ_THRESHOLD){
+    .directive("vzElement", function(vzConfig, $document, VzDraggableFactory, VZ_THRESHOLD){
         return{
             restrict: "A",
             require: '^vzDesigner',
@@ -231,11 +245,9 @@ angular.module("visular.core",['visular.config'])
             '   ng-include="markupUrl()">' +
             '</g>',
             link: function(scope, elem, attrs, designerController){
-                test = elem;
                 scope.markupUrl = function(){
                     return vzConfig.markupPath + "/" + scope.model.type + ".svg";
-                }
-
+                };
 
                 // control scales
                 scope.scaleX = 1;
@@ -246,14 +258,13 @@ angular.module("visular.core",['visular.config'])
                     console.log(Math.abs(scope.model.size.height - height));
                     if(height && Math.abs(scope.model.size.height - height) > VZ_THRESHOLD)
                         scope.scaleY = scope.model.size.height / height ;
-                })
+                });
                 scope.$watch(function(){
                     return elem.get(0).getBBox().width;
                 }, function(width){
                     if(width && Math.abs(scope.model.size.width - width) > VZ_THRESHOLD)
                         scope.scaleX = scope.model.size.width / width;
-                })
-
+                });
                 function mousedown(){
                     scope.$apply(function(){
                         designerController.bringToFront(scope.model);
@@ -275,46 +286,86 @@ angular.module("visular.core",['visular.config'])
                     elem.unbind("mouseup", mouseup);
                 });
 
-
-                var draggable  = {
-                    startPos: {
-                        x:0,
-                        y: 0
-                    },
-                    mousemove: function(evt){
-                        scope.$apply(function(){
-                            var x = evt.pageX - draggable.startPos.x - draggable.designerOffset.left,
-                                y = evt.pageY - draggable.startPos.y - draggable.designerOffset.top;
-
-                            designerController.drag.to(g.point(x,y), scope.model, evt);
-                        });
-                    },
-                    mousedown: function(evt){
-                        draggable.designerOffset = designerController.elem.offset();
-                        draggable.startPos.x = evt.pageX - elem.position().left;
-                        draggable.startPos.y = evt.pageY - elem.position().top;
-
-                        scope.$apply(function(){
-                            designerController.drag.started(scope.model, evt);
-                        });
-
-                        $document.bind("mousemove", draggable.mousemove);
-                        $document.one("mouseup", function(){
-                            scope.$apply(function(){
-                                designerController.drag.finished(scope.model, evt);
-                            });
-                            $document.unbind("mousemove", draggable.mousemove);
-                        });
-                        return false;
-                    },
-                    init: function(){
-                        elem.bind("mousedown", draggable.mousedown);
-                        scope.$on("$destroy", function(){
-                            elem.unbind("mousedown", draggable.mousedown)
-                        })
-                    }
-                }
-                draggable.init();
+                new VzDraggableFactory(elem, designerController.elem)
+                    .onDragStart(function(evt){
+                        designerController.drag.started(scope.model, evt);
+                    })
+                    .onDragFinish(function(evt){
+                        designerController.drag.finished(scope.model, evt);
+                    })
+                    .onDrag(function(evt){
+                        designerController.drag
+                            .to(g.point(this.elementMovement.x,this.elementMovement.y), scope.model, evt);
+                    });
             }
         }
     })
+
+
+    .factory("VzDraggableFactory", function($document){
+        return function(domElem, containerDomElem){
+            var _this = this, onDrag, onDragStart, onDragFinish, containerOffset;
+            domElem = angular.element(domElem);
+            var scope = domElem.scope();
+
+            domElem.bind("mousedown", mousedown);
+
+            scope.$on("$destroy", function(){
+                domElem.unbind("mousedown", mousedown);
+            });
+
+            this.onDrag = function(callback){
+                onDrag = callback;
+                return this;
+            };
+            this.onDragStart = function(callback){
+                onDragStart = callback;
+                return this;
+            }
+            this.onDragFinish = function(callback){
+                onDragFinish = callback;
+                return this;
+            }
+            function mousedown(evt){
+                _this.startPosition = {
+                    x: evt.pageX,
+                    y: evt.pageY
+                };
+                _this.localOffset = {
+                    x: _this.startPosition.x - domElem.position().left,
+                    y: _this.startPosition.y - domElem.position().top
+                }
+                containerOffset = containerDomElem.offset();
+                if(angular.isFunction(onDragStart)){
+                    scope.$apply(function(){
+                        onDragStart.call(_this, evt);
+                    })
+                }
+                $document.bind("mousemove", mousemove);
+                $document.one("mouseup", function(){
+                    $document.unbind("mousemove", mousemove);
+                    if(angular.isFunction(onDragFinish)){
+                        scope.$apply(function(){
+                            onDragFinish.call(_this, evt);
+                        })
+                    }
+                });
+                return false;
+            }
+            function mousemove(evt){
+                _this.position = {
+                    x: evt.pageX,
+                    y: evt.pageY
+                };
+                _this.elementMovement = {
+                    x: evt.pageX - _this.localOffset.x - containerOffset.left,
+                    y: evt.pageY - _this.localOffset.y - containerOffset.top
+                }
+                if(angular.isFunction(onDrag)){
+                    scope.$apply(function(){
+                        onDrag.call(_this, evt);
+                    })
+                }
+            }
+        }
+    });
