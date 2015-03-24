@@ -66,20 +66,7 @@ angular.module("visular.core",['visular.config'])
             require: "^vzDesigner",
             link: function(scope, elem){
 
-                function mousemove(evt){
 
-                }
-                function mousedown(){
-                    $document.bind("mousemove", mousemove);
-                    $document.one("mouseup", mouseup);
-                }
-                function mouseup(){
-                    $document.unbind("mousemove", mousemove);
-                }
-                elem.bind("mousedown", mousedown);
-                scope.$on("$destroy", function(){
-                    elem.unbind("mousedown");
-                })
             }
         }
     })
@@ -358,9 +345,14 @@ angular.module("visular.core",['visular.config'])
                     y: evt.pageY
                 };
                 _this.elementMovement = {
-                    x: evt.pageX - _this.localOffset.x - containerOffset.left,
-                    y: evt.pageY - _this.localOffset.y - containerOffset.top
-                }
+                    /**
+                     * TODO: simplify calculation if possible
+                     */
+                    x: Math.min(Math.max(evt.pageX,containerOffset.left), containerDomElem.width() + containerOffset.left)
+                    - _this.localOffset.x - containerOffset.left,
+                    y: Math.min(Math.max(evt.pageY,containerOffset.top), containerDomElem.height()+ containerOffset.top)
+                    - _this.localOffset.y - containerOffset.top
+                };
                 if(angular.isFunction(onDrag)){
                     scope.$apply(function(){
                         onDrag.call(_this, evt);
