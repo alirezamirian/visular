@@ -14,7 +14,11 @@ vz-designer > svg{
   width: 100px;
   height: 80px;
   position: absolute;
+  pointer-events: none;
 //  z-index: -1;
+}
+.vz-selected-item-overlay > *{
+  pointer-events: auto;
 }
 
 vz-resize-handle{
