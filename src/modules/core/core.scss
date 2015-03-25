@@ -4,7 +4,7 @@ vz-designer{
   display: block;
   position: relative;
 }
-vz-designer svg{
+vz-designer > svg{
   width: 100%;
   min-height: 100%;
   display: inline-block;
