@@ -1,4 +1,7 @@
 <g>
-    <rect width="100" height="80" fill="#f4f4f4" stroke="#ddd">
+    <text width="100px" height="40px" fill="red" stroke="red">test</text>
+
+    <rect width="100%" height="100%" fill="#f4f4f4" stroke="#ddd">
     </rect>
+
 </g>

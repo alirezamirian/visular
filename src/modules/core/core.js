@@ -28,6 +28,9 @@ angular.module("visular.core",['visular.config'])
 
             this.getBBox = function(){
                 return g.rect(this.position.x, this.position.y, this.size.width, this.size.height).bbox(this.rotation);
+            };
+            this.getRect = function(){
+                return g.rect(this.position.x, this.position.y, this.size.width, this.size.height);
             }
             this.resizable = true;
             this.rotation = 0;
@@ -60,12 +63,23 @@ angular.module("visular.core",['visular.config'])
         }
     })
 
-    .directive("vzResizeHandle", function($document){
+    .directive("vzResizeHandle", function(VzDraggableFactory){
         return{
             restrict: "E",
             require: "^vzDesigner",
-            link: function(scope, elem){
-
+            link: function(scope, elem, attrs, designerController){
+                var elemRect;
+                new VzDraggableFactory(elem, designerController.elem)
+                    .onDragStart(function(){
+                        elemRect = scope.selectedItem.getRect();
+                    })
+                    .onDrag(function(evt){
+                        var rect = g.rect(elemRect);
+                        rect.width  = Math.max(evt.pageX - designerController.elem.offset().left - elemRect.x, 10);
+                        rect.height = Math.max(evt.pageY - designerController.elem.offset().top - elemRect.y,10);
+                        designerController
+                            .resizeElement(rect, scope.selectedItem, evt);
+                    });
 
             }
         }
@@ -93,6 +107,7 @@ angular.module("visular.core",['visular.config'])
             '</div>',
             controller: function($element, $scope){
                 var dragInterceptors = [];
+                var resizeInterceptors = [];
                 this.elem = $element;
                 this.diagram = $scope.diagram;
                 this.bringToFront = function(elementModel){
@@ -128,15 +143,32 @@ angular.module("visular.core",['visular.config'])
                         draggingElement.position.x = interceptedPos.x;
                         draggingElement.position.y = interceptedPos.y;
                     }
-                }
+                };
+                this.resizeElement = function(rect, resizingElement, mouseEvent){
+                    var interceptedRect = rect;
+                    resizeInterceptors.forEach(function(item){
+                        interceptedRect = item.interceptor(interceptedRect, resizingElement, mouseEvent);
+                    });
+                    console.log("resize ",resizingElement," to ", interceptedRect.width, interceptedRect.height)
 
+                    resizingElement.size.width = interceptedRect.width;
+                    resizingElement.size.height = interceptedRect.height;
+                    /*resizingElement.position.x = interceptedRect.x;
+                    resizingElement.position.y = interceptedRect.y;*/
+
+                };
                 this.addElementDragInterceptor = function(dragInterceptor, dragStartHandler, dragFinishHandler){
                     dragInterceptors.push({
                         interceptor: dragInterceptor || angular.identity,
                         dragStartHandler: dragStartHandler || angular.noop,
                         dragFinishHandler: dragFinishHandler || angular.noop
                     })
-                }
+                };
+                this.addElementResizeInterceptor = function(resizeInterceptor){
+                    resizeInterceptor.push({
+                        interceptor: resizeInterceptor || angular.identity
+                    });
+                };
                 this.addOverlay = function(overlayHtml){
                     var overlayScope = $scope.$new();
                     var overlay = angular.element(overlayHtml).appendTo($element);
@@ -217,7 +249,7 @@ angular.module("visular.core",['visular.config'])
         }
     })
 
-    .directive("vzElement", function(vzConfig, $document, VzDraggableFactory, VZ_THRESHOLD){
+    .directive("vzElement", function(vzConfig, $document, VzDraggableFactory, $timeout, VZ_THRESHOLD){
         return{
             restrict: "A",
             require: '^vzDesigner',
@@ -225,12 +257,12 @@ angular.module("visular.core",['visular.config'])
                 model: "=vzElement"
             },
             template:
-            '<g class="vz-element" ' +
+            '<svg class="vz-element" ng-attr-width="{{model.size.width}}" ng-attr-height="{{model.size.height}}" ' +
             '   ng-attr-transform="' +
             '       translate({{model.position.x}},{{model.position.y}})' +
-            '       scale({{scaleX}}, {{scaleY}})" ' +
+            '       " ' +
             '   ng-include="markupUrl()">' +
-            '</g>',
+            '</svg>',
             link: function(scope, elem, attrs, designerController){
                 scope.markupUrl = function(){
                     return vzConfig.markupPath + "/" + scope.model.type + ".svg";
@@ -239,19 +271,32 @@ angular.module("visular.core",['visular.config'])
                 // control scales
                 scope.scaleX = 1;
                 scope.scaleY = 1;
-                scope.$watch(function(){
-                    return elem.get(0).getBBox().height;
+                /*scope.$watch(function(){
+                    return +elem.get(0).getBBox().height.toFixed(1);
                 }, function(height){
-                    console.log(Math.abs(scope.model.size.height - height));
                     if(height && Math.abs(scope.model.size.height - height) > VZ_THRESHOLD)
                         scope.scaleY = scope.model.size.height / height ;
                 });
                 scope.$watch(function(){
-                    return elem.get(0).getBBox().width;
+                    return +elem.get(0).getBBox().width.toFixed(1);
                 }, function(width){
                     if(width && Math.abs(scope.model.size.width - width) > VZ_THRESHOLD)
                         scope.scaleX = scope.model.size.width / width;
-                });
+                });*/
+                /*scope.$watch(function(){
+                    var currentBBox = elem.get(0).getBBox();
+                    console.log("currBbox", currentBBox);
+                    console.log(Math.abs(scope.model.size.height - currentBBox.height),Math.abs(scope.model.size.width - currentBBox.width))
+
+                    $timeout(function(){
+                        if(currentBBox.height && Math.abs(scope.model.size.height - currentBBox.height) > VZ_THRESHOLD)
+                            scope.scaleY = scope.model.size.height / currentBBox.height ;
+                        if(currentBBox.width && Math.abs(scope.model.size.width - currentBBox.width) > VZ_THRESHOLD)
+                            scope.scaleX = scope.model.size.width / currentBBox.width;
+                    },10)
+
+
+                });*/
                 function mousedown(){
                     scope.$apply(function(){
                         designerController.bringToFront(scope.model);
@@ -293,6 +338,7 @@ angular.module("visular.core",['visular.config'])
         return function(domElem, containerDomElem){
             var _this = this, onDrag, onDragStart, onDragFinish, containerOffset;
             domElem = angular.element(domElem);
+            containerDomElem = containerDomElem ? angular.element(containerDomElem) : $document;
             var scope = domElem.scope();
 
             domElem.bind("mousedown", mousedown);
