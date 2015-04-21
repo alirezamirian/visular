@@ -7,21 +7,78 @@
 
     <script src="lib/jquery-1.11.2.min.js"></script>
     <script src="lib/angular-1.3.11/angular.js"></script>
+    <script src="lib/angular-1.3.11/angular-aria.js"></script>
+    <script src="lib/angular-1.3.11/angular-messages.js"></script>
+    <script src="lib/angular-1.3.11/angular-animate.js"></script>
+
+    <script src="lib/material/angular-material.js"></script>
+
     <script src="lib/geometry.js"></script>
     <script src="../dist/visular-0.0.1/visular.js"></script>
     <script src="js/demoApp.ng.js"></script>
 
 
+    <link rel="stylesheet" href="lib/material/angular-material.css" />
     <link rel="stylesheet" href="../dist/visular-0.0.1/visular.css" />
     <link rel="stylesheet" href="css/demoApp.css" />
 
 </head>
 <body ng-controller="mainController as ctrl">
 
-<vz-designer
-        vz-diagram="ctrl.diagram"
-        vz-guideline>
-</vz-designer>
+<md-toolbar>
+    <h2 class="md-toolbar-tools">Visular Demo app</h2>
+</md-toolbar>
+<md-content layout="row" class="md-padding">
+    <div class="demo-inspector md-whiteframe-z1" layout-margin layout="column">
+        <md-subheader>Inspector</md-subheader>
+        <md-divider></md-divider>
+        <div ng-if="!ctrl.selectedItem" layout="column" flex layout-align="center center" layout-margin>
+            No Item Selected
+        </div>
+        <div layout="column" layout-margin
+             ng-if="ctrl.selectedItem" ng-form="ctrl.inspectorForm">
+            <md-input-container>
+                <label>Width</label>
+                <input required type="number" name="width" min="10" max="500"
+                       ng-model="ctrl.selectedItem.size.width" />
+                <div ng-messages="ctrl.inspectorForm.width.$error">
+                    <div ng-message="min">Man! This is too tiny!</div>
+                    <div ng-message="max">Giant element!</div>
+                </div>
+            </md-input-container>
+            <md-input-container>
+
+                <label>Height</label>
+                <input type="number"
+                       ng-model="ctrl.selectedItem.size.height" />
+            </md-input-container>
+            <md-input-container>
+
+                <label>X</label>
+                <input type="number"
+                       ng-model="ctrl.selectedItem.position.x" />
+            </md-input-container>
+            <md-input-container>
+
+                <label>Y</label>
+                <input type="number"
+                       ng-model="ctrl.selectedItem.position.y" />
+            </md-input-container>
+        </div>
+    </div>
+    <div flex layout-margin class="md-whiteframe-z1">
+        <md-subheader>Designer</md-subheader>
+        <md-divider></md-divider>
+        <vz-designer
+                     class="demo-designer"
+                     vz-diagram="ctrl.diagram"
+                     vz-guideline
+                     vz-selected-item="ctrl.selectedItem">
+        </vz-designer>
+    </div>
+
+</md-content>
+
 
 </body>
 </html>

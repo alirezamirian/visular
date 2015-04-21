@@ -4,7 +4,7 @@
  */
 
 
-angular.module("demoApp", ['visular'])
+angular.module("demoApp", ['visular', 'ngMaterial', 'ngMessages'])
 
     .config(function(vzConfigProvider){
         vzConfigProvider.setMarkupPath("../templates");

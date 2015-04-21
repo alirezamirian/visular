@@ -1,4 +1,11 @@
-vz-designer{
-    height: 400px;
-    border: 1px solid #ddd;
+.demo-designer{
+    min-height: 400px;
+}
+.demo-inspector{
+
+}
+
+.md-subheader.md-default-theme{
+    margin: 0;
+    background: #fafafa;
 }
