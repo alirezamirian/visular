@@ -5,8 +5,8 @@ vz-designer{
   position: relative;
 }
 vz-designer > svg{
-  width: 100%;
-  min-height: 100%;
+  width: inherit;
+  min-height: inherit;
   display: inline-block;
 }
 
