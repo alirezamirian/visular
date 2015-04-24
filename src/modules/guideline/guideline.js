@@ -230,4 +230,4 @@ angular.module("visular.guideline", [])
             }
         }
         return Guideline;
-    })
+    });

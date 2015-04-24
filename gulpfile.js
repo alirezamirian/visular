@@ -133,7 +133,7 @@ gulp.task('build', ['build-scss', 'build-js']);
 gulp.task('default', ['build']);
 
 gulp.task('watch', ['build'], function() {
-    gulp.watch('src/**/*', ['build']);
+    gulp.watch('src/**', ['build']);
 });
 
 function autoprefix() {

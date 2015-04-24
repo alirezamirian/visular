@@ -15,4 +15,4 @@ angular.module("visular.config",[])
         this.$get = function(){
             return this;
         }
-    })
+    });
