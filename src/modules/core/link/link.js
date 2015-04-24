@@ -15,7 +15,7 @@
     function vzLinkDirective(){
         return{
             restrict: "A",
-            require: "^vzDesigner",
+            require: "^vzDiagram",
             scope:{
                 model: "=vzLink"
             },
@@ -28,7 +28,7 @@
             '               translate({{targetArrow.translate.x}}, {{targetArrow.translate.y}}) ' +
             '               rotate({{targetArrow.rotation}})">' +
             '</g>',
-            link: function(scope, elem, attrs, designerController){
+            link: function(scope, elem, attrs, diagramController){
 
                 scope.srcElem = null;
                 scope.targetElem = null;
@@ -43,10 +43,10 @@
                 };
 
                 scope.$watch("model.source.id", function(){
-                    scope.srcElem = designerController.diagram.elementsById[scope.model.source.id];
+                    scope.srcElem = diagramController.diagram.elementsById[scope.model.source.id];
                 });
                 scope.$watch("model.target.id", function(){
-                    scope.targetElem = designerController.diagram.elementsById[scope.model.target.id];
+                    scope.targetElem = diagramController.diagram.elementsById[scope.model.target.id];
                 });
                 scope.$watch("[targetElem.position, targetElem.size, srcElem.position, srcElem.size]", function(){
                     if(scope.targetElem && scope.srcElem){

@@ -36,7 +36,7 @@
         return{
 
             restrict: "A",
-            require: '^vzDesigner',
+            require: '^vzDiagram',
             scope: {
                 model: "=vzElement"
             },
@@ -47,7 +47,7 @@
             '       " ' +
             '   ng-include="markupUrl()">' +
             '</svg>',
-            link: function(scope, elem, attrs, designerController){
+            link: function(scope, elem, attrs, diagramController){
                 scope.markupUrl = function(){
                     return vzConfig.markupPath + "/" + scope.model.type + ".svg";
                 };
@@ -83,12 +83,12 @@
                  });*/
                 function mousedown(){
                     scope.$apply(function(){
-                        designerController.bringToFront(scope.model);
+                        diagramController.bringToFront(scope.model);
                     });
                 }
                 function mouseup(){
                     scope.$apply(function(){
-                        designerController.select(scope.model);
+                        diagramController.select(scope.model);
                     });
                 }
 
@@ -102,15 +102,15 @@
                     elem.unbind("mouseup", mouseup);
                 });
 
-                new VzDraggableFactory(elem, designerController.elem)
+                new VzDraggableFactory(elem, diagramController.elem)
                     .onDragStart(function(evt){
-                        designerController.drag.started(scope.model, evt);
+                        diagramController.drag.started(scope.model, evt);
                     })
                     .onDragFinish(function(evt){
-                        designerController.drag.finished(scope.model, evt);
+                        diagramController.drag.finished(scope.model, evt);
                     })
                     .onDrag(function(evt){
-                        designerController.drag
+                        diagramController.drag
                             .to(g.point(this.draggedPosition.x,this.draggedPosition.y), scope.model, evt);
                     });
             }

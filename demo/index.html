@@ -32,7 +32,9 @@
     <div class="demo-inspector md-whiteframe-z1" layout-margin layout="column">
         <md-subheader>Inspector</md-subheader>
         <md-divider></md-divider>
-        <div ng-if="!ctrl.selectedItem" layout="column" flex layout-align="center center" layout-margin>
+        <div ng-if="!ctrl.selectedItem" flex
+             layout="column" layout-align="center center" layout-margin
+             class="demo-placeholder">
             No Item Selected
         </div>
         <div layout="column" layout-margin
@@ -69,12 +71,12 @@
     <div flex layout-margin class="md-whiteframe-z1">
         <md-subheader>Designer</md-subheader>
         <md-divider></md-divider>
-        <vz-designer
-                     class="demo-designer"
-                     vz-diagram="ctrl.diagram"
-                     vz-guideline
-                     vz-selected-item="ctrl.selectedItem">
-        </vz-designer>
+        <vz-diagram
+                class="demo-diagram"
+                vz-diagram="ctrl.diagram"
+                vz-guideline
+                vz-selected-item="ctrl.selectedItem">
+        </vz-diagram>
     </div>
 
 </md-content>

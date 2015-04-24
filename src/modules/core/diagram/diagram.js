@@ -2,7 +2,7 @@
     "use strict";
     angular.module("visular.core")
         .factory("VzDiagramModel", VzDiagramModel)
-        .directive("vzDesigner", vzDesignerDirective);
+        .directive("vzDiagram", vzDiagramDirective);
 
 
     function VzDiagramModel(VzElementModel, VzLinkModel){
@@ -24,7 +24,7 @@
             }
         }
     }
-    function vzDesignerDirective($compile){
+    function vzDiagramDirective($compile){
         return{
             restrict: "E",
             scope:{

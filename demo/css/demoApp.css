@@ -1,11 +1,14 @@
-.demo-designer{
+.demo-diagram{
     min-height: 400px;
 }
 .demo-inspector{
-
+    min-width: 173px;
 }
 
 .md-subheader.md-default-theme{
     margin: 0;
     background: #fafafa;
+}
+.demo-placeholder{
+    color: #aaa;
 }

@@ -8,14 +8,14 @@
  * @ngdoc module
  * @name visular.guideline
  * @description
- * This module provide semantic and UI for adding a guideline system to vz-designer.
+ * This module provide semantic and UI for adding a guideline system to vz-diagram.
  * Two major part of the module are `vzGuideline` directive, and `VzGuidelineFactory` service.
  *
  * `vzGuidelineFactory` is a service with a `create()` method, which creates a guideline system object
  *  that handles all positioning semantics for a guideline system.
  *
- *  `vzGuideline` directive makes use of vzDesigner controller api to register a **drag interceptor**
- *  for the designer. It also adds an overlay to designer for visualizing guidelines
+ *  `vzGuideline` directive makes use of vzDiagram controller api to register a **drag interceptor**
+ *  for the diagram. It also adds an overlay to diagram for visualizing guidelines
  */
 angular.module("visular.guideline", [])
 
@@ -28,14 +28,14 @@ angular.module("visular.guideline", [])
  * @restrict A
  *
  * @description
- * `vz-guideline` is a directive that adds **guidelines** to `vz-designer` element that help neat alignment of the
+ * `vz-guideline` is a directive that adds **guidelines** to `vz-diagram` element that help neat alignment of the
  * elements when dragging them. It internally uses `vzGuidelineFactory` which is a service that provides all
  * positioning semantics of moving rects in such guideline-enabled system.
  *
  * @usage
  * <hljs lang="html">
- *  <vz-designer vz-guideline>
- *  </<vz-designer>
+ *  <vz-diagram vz-guideline>
+ *  </<vz-diagram>
  * </hljs>
  */
     .directive("vzGuideline", function vzGuidelineDirective(VzGuidelineFactory){
@@ -48,10 +48,10 @@ angular.module("visular.guideline", [])
             '       left: !guideline.isHorizontal() ? guideline.level : 0}"></div>';
         return{
             restrict: "A",
-            require: "vzDesigner",
+            require: "vzDiagram",
             link: function(){
-                var designerController = arguments[arguments.length-2],
-                    scope = designerController.addOverlay(overlayTemplate);
+                var diagramController = arguments[arguments.length-2],
+                    scope = diagramController.addOverlay(overlayTemplate);
 
                 var guidelineSystem = null;
                 function dragStarted(element){
@@ -66,8 +66,8 @@ angular.module("visular.guideline", [])
                      * TODO: elements can be filtered to a smaller set that are at least in viewport
                      */
                     guidelineSystem = VzGuidelineFactory.create(
-                        g.rect(0,0,designerController.elem.width(), designerController.elem.height()),
-                        designerController.diagram.elements.filter(otherRectsFilter).map(elementModelToRect),
+                        g.rect(0,0,diagramController.elem.width(), diagramController.elem.height()),
+                        diagramController.diagram.elements.filter(otherRectsFilter).map(elementModelToRect),
                         element.getBBox()
                     );
                     scope.guidelines = guidelineSystem.activeGuidelines;
@@ -80,7 +80,7 @@ angular.module("visular.guideline", [])
                     guidelineSystem.moveTargetToPosition(pointToMove);
                     return guidelineSystem.guidedTargetRect.origin();
                 }
-                designerController
+                diagramController
                     .addElementDragInterceptor(
                     dragInterceptor, dragStarted, dragFinished);
             }
