@@ -3,6 +3,7 @@
 vz-diagram{
   display: block;
   position: relative;
+  overflow: hidden;
 }
 vz-diagram > svg{
   width: 100%;
