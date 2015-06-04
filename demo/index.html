@@ -39,9 +39,9 @@
         </div>
         <div layout="column" layout-margin
              ng-if="ctrl.selectedItem" ng-form="ctrl.inspectorForm">
-            <md-input-container>
+            <md-input-container ng-if="ctrl.selectedItem.name !== undefined">
                 <label>Name</label>
-                <input required type="text" name="name"
+                <input type="text" name="name"
                        ng-model="ctrl.selectedItem.name" />
                 <div ng-messages="ctrl.inspectorForm.name.$error">
                     <div ng-message="required">Unnamed elements are bad!</div>

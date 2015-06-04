@@ -1,0 +1,12 @@
+<g>
+
+    <circle
+            stroke="#8c9600"
+            stroke-width="2"
+            fill="#d9e893"
+            ng-attr-r="{{model.size.width/2-2}}"
+            ng-attr-cx="{{model.size.width/2}}"
+            ng-attr-cy="{{model.size.height/2}}">
+    </circle>
+
+</g>

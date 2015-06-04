@@ -13,19 +13,39 @@ angular.module("demoApp", ['visular', 'ngMaterial', 'ngMessages'])
 
     .controller("mainController", function(VzDiagramModel, VzElementModel){
         this.diagram = new VzDiagramModel();
-        var elems = [
-            new VzElementModel("UserTask"),
-            new VzElementModel("UserTask")
-        ];
-        elems[0].position.x = 100;
-        elems[0].position.y = 200;
-        elems[0].size.width = 300;
-        elems[0].name = "Task 1";
-        elems[1].name = "Task 2";
+        var userTask1 = new VzElementModel("UserTask");
+        var userTask2 = new VzElementModel("UserTask");
+        var startNoneEvent = new VzElementModel("StartNoneEvent");
+        var endNoneEvent = new VzElementModel("EndNoneEvent");
 
-        this.diagram.addElement(elems[0]);
-        this.diagram.addElement(elems[1]);
+        startNoneEvent.position.x = 100;
+        startNoneEvent.position.y = 125;
+        startNoneEvent.size.width = 50;
+        startNoneEvent.size.height = 50;
 
-        this.diagram.addLink(elems[0], elems[1]);
+        endNoneEvent.position.x = 600;
+        endNoneEvent.position.y = 125;
+        endNoneEvent.size.width = 50;
+        endNoneEvent.size.height = 50;
+
+        userTask1.size.width = 150;
+        userTask1.position.x = 200;
+        userTask1.position.y = 100;
+        userTask1.name = "Task 1";
+
+        userTask2.size.width = 150;
+        userTask2.position.x = 400;
+        userTask2.position.y = 100;
+        userTask2.name = "Task 2";
+
+
+        this.diagram.addElement(startNoneEvent);
+        this.diagram.addElement(userTask1);
+        this.diagram.addElement(userTask2);
+        this.diagram.addElement(endNoneEvent);
+
+        this.diagram.addLink(startNoneEvent, userTask1);
+        this.diagram.addLink(userTask1, userTask2);
+        this.diagram.addLink(userTask2, endNoneEvent);
 
     })
