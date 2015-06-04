@@ -20,8 +20,8 @@ angular.module("demoApp", ['visular', 'ngMaterial', 'ngMessages'])
         elems[0].position.x = 100;
         elems[0].position.y = 200;
         elems[0].size.width = 300;
-        elems[0].name = "test1";
-        elems[1].name = "test2";
+        elems[0].name = "Task 1";
+        elems[1].name = "Task 2";
 
         this.diagram.addElement(elems[0]);
         this.diagram.addElement(elems[1]);

@@ -40,6 +40,14 @@
         <div layout="column" layout-margin
              ng-if="ctrl.selectedItem" ng-form="ctrl.inspectorForm">
             <md-input-container>
+                <label>Name</label>
+                <input required type="text" name="name"
+                       ng-model="ctrl.selectedItem.name" />
+                <div ng-messages="ctrl.inspectorForm.name.$error">
+                    <div ng-message="required">Unnamed elements are bad!</div>
+                </div>
+            </md-input-container>
+            <md-input-container>
                 <label>Width</label>
                 <input required type="number" name="width" min="10" max="500"
                        ng-model="ctrl.selectedItem.size.width" />
