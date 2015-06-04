@@ -91,7 +91,7 @@
                     resizeInterceptors.forEach(function(item){
                         interceptedRect = item.interceptor(interceptedRect, resizingElement, mouseEvent);
                     });
-                    console.log("resize ",resizingElement," to ", interceptedRect.width, interceptedRect.height)
+                    //console.log("resize ",resizingElement," to ", interceptedRect.width, interceptedRect.height)
 
                     resizingElement.size.width = interceptedRect.width;
                     resizingElement.size.height = interceptedRect.height;
