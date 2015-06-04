@@ -33,8 +33,8 @@
                     y: evt.pageY
                 };
                 _this.localOffset = {
-                    x: _this.startPosition.x - domElem.position().left,
-                    y: _this.startPosition.y - domElem.position().top
+                    x: _this.startPosition.x - domElem.offset().left,
+                    y: _this.startPosition.y - domElem.offset().top
                 }
                 containerOffset = containerDomElem.offset();
                 containerOffset.bottom = containerOffset.top + containerDomElem.height();
