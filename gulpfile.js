@@ -13,7 +13,7 @@ var pkg = require('./package.json');
 
 var gulp = require('gulp');
 var sass = require('gulp-sass');
-var uglify = require('gulp-uglify');
+var uglify = require('gulp-uglifyjs');
 var insert = require('gulp-insert');
 var ngAnnotate = require('gulp-ng-annotate');
 var plumber = require('gulp-plumber');
@@ -24,7 +24,6 @@ var gulpif = require('gulp-if');
 var rename = require('gulp-rename');
 var autoprefixer = require('gulp-autoprefixer');
 var minifyCss = require('gulp-minify-css');
-
 
 var getModuleInfo = require('./build-utils/ngModuleData');
 
@@ -85,7 +84,12 @@ function buildJs(do_minification){
         .pipe(concat('visular.js'))
         .pipe(gulp.dest(config.outputDir))
         .pipe(gulpif(do_minification, lazypipe()
-                .pipe(uglify, { preserveComments: 'some' })
+                .pipe(uglify, {
+                    preserveComments: 'some',
+                    compress: {
+                        drop_console: false
+                    }
+                })
                 .pipe(rename, { extname: '.min.js' })
                 .pipe(gulp.dest, config.outputDir)
             ()
