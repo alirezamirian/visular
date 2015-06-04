@@ -41,11 +41,16 @@
                 model: "=vzElement"
             },
             template:
-            '<svg class="vz-element" ng-attr-width="{{model.size.width}}" ng-attr-height="{{model.size.height}}" ' +
-            '   ng-attr-x="{{model.position.x}}" ng-attr-y="{{model.position.y}}"'+
-            '   ng-include="markupUrl()">' +
-            '</svg>',
+            '<svg class="vz-element" \
+                ng-class="{\'vz-selected\': vzDiagram.isSelected(model)}"\
+                ng-attr-width="{{model.size.width}}" \
+                ng-attr-height="{{model.size.height}}" \
+                ng-attr-x="{{model.position.x}}" \
+                ng-attr-y="{{model.position.y}}" \
+                ng-include="markupUrl()">\
+            </svg>',
             link: function(scope, elem, attrs, diagramController){
+                scope.vzDiagram = diagramController;
                 scope.markupUrl = function(){
                     return vzConfig.markupPath + "/" + scope.model.type + ".svg";
                 };
