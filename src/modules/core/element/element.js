@@ -42,9 +42,7 @@
             },
             template:
             '<svg class="vz-element" ng-attr-width="{{model.size.width}}" ng-attr-height="{{model.size.height}}" ' +
-            '   ng-attr-transform="' +
-            '       translate({{model.position.x}},{{model.position.y}})' +
-            '       " ' +
+            '   ng-attr-x="{{model.position.x}}" ng-attr-y="{{model.position.y}}"'+
             '   ng-include="markupUrl()">' +
             '</svg>',
             link: function(scope, elem, attrs, diagramController){
@@ -55,6 +53,11 @@
                 // control scales
                 scope.scaleX = 1;
                 scope.scaleY = 1;
+                scope.$watch(function () {
+                    return elem.get(0).getBBox().height.toFixed(1);
+                }, function (newValue, oldValue) {
+                    console.log(oldValue + " => " + newValue);
+                });
                 /*scope.$watch(function(){
                  return +elem.get(0).getBBox().height.toFixed(1);
                  }, function(height){
@@ -95,7 +98,7 @@
                 elem.bind("mousedown", mousedown);
                 scope.$on("$destroy", function(){
                     elem.unbind("mousedown", mousedown);
-                })
+                });
 
                 elem.bind("mouseup", mouseup);
                 scope.$on("$destroy", function(){
