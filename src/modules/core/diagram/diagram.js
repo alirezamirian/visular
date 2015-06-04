@@ -60,12 +60,16 @@
                 this.selectedItem = function(){
                     return $scope.selectedItem;
                 };
+                this.isSelected = function(item){
+                    // this can be extended for multiple selection
+                    return $scope.selectedItem == item;
+                }
                 this.select = function(elementModel){
                     $scope.selectedItem = elementModel;
                 };
                 this.unSelect = function(){
                     $scope.selectedItem = null;
-                }
+                };
                 this.drag = {
                     started: function(draggingElement, mouseEvent){
                         dragInterceptors.forEach(function(item){
