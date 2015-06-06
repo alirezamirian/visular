@@ -1,29 +1,22 @@
-(function(){
+(function(angular){
     "use strict";
-    angular.module("visular.core")
-        .directive("vzResizeHandle", vzResizeHandleDirective)
-        .directive("vzResizeOverlay", vzResizeOverlayDirective);
+    /**
+     * @ngdoc directive
+     * @name vzResizeHandle
+     *
+     * @description
+     * handles for resizing an element. The logic for resizing element is determined based on the value of
+     * `vzResizeHandle` attribute which can strings like: **top**, **bottom left**, **top right**, **left**, etc.
+     *
+     * @restrict E
+     * */
+    angular.module('visular.resizeHandles')
+        .directive('vzResizeHandle', vzResizeHandleDirectiveProvider);
 
-    function vzResizeOverlayDirective(){
-        return{
-            require: "vzDiagram",
-            compile: function(tElem){
-                tElem.append(
-                    '<vz-selected-item-overlay>' +
-                    '   <vz-resize-handle vz-overlay-handle="top left"></vz-resize-handle>' +
-                    '   <vz-resize-handle vz-overlay-handle="top"></vz-resize-handle>' +
-                    '   <vz-resize-handle vz-overlay-handle="top right"></vz-resize-handle>' +
-                    '   <vz-resize-handle vz-overlay-handle="right"></vz-resize-handle>' +
-                    '   <vz-resize-handle vz-overlay-handle="bottom right"></vz-resize-handle>' +
-                    '   <vz-resize-handle vz-overlay-handle="bottom"></vz-resize-handle>' +
-                    '   <vz-resize-handle vz-overlay-handle="bottom left"></vz-resize-handle>' +
-                    '   <vz-resize-handle vz-overlay-handle="left"></vz-resize-handle>' +
-                    '</vz-selected-item-overlay>');
-            }
-        }
-    }
     // TODO: provide `g` as an angular service instead of global variable
-    function vzResizeHandleDirective(VzDraggableFactory){
+    // TODO: feat: add keepAspectRatio option for corner handles ('top left', 'bottom right', etc.), which is the default
+    // and can be ignored with SHIFT or CTRL key
+    function vzResizeHandleDirectiveProvider(VzDraggableFactory){
         var MIN_SIZE = 10;
         return{
             restrict: "E",
@@ -41,18 +34,19 @@
                     .onDrag(function(evt){
                         var rect = g.rect(elemRect);
 
-                        if(attrs.vzOverlayHandle.indexOf("top")>-1){
+                        var positionExpression = attrs.vzOverlayHandle.toLowerCase();
+                        if(positionExpression.indexOf("top")>-1){
                             rect.height = Math.max(elemOffsets.top + elemRect.height - evt.pageY, MIN_SIZE);
                             rect.y = (elemRect.y + elemRect.height)/* old bottom*/ - rect.height;
                         }
-                        if(attrs.vzOverlayHandle.indexOf("bottom")>-1){
+                        if(positionExpression.indexOf("bottom")>-1){
                             rect.height = Math.max(evt.pageY - elemOffsets.top, MIN_SIZE);
                         }
-                        if(attrs.vzOverlayHandle.indexOf("left")>-1){
+                        if(positionExpression.indexOf("left")>-1){
                             rect.width = Math.max(elemOffsets.left + elemRect.width - evt.pageX, MIN_SIZE);
                             rect.x = (elemRect.x + elemRect.width)/* old right*/ - rect.width;
                         }
-                        if(attrs.vzOverlayHandle.indexOf("right")>-1){
+                        if(positionExpression.indexOf("right")>-1){
                             rect.width = Math.max(evt.pageX - elemOffsets.left, MIN_SIZE);
                         }
 
@@ -63,4 +57,6 @@
             }
         }
     }
-})();
+
+})(angular);
+

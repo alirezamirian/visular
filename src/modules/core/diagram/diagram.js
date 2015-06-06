@@ -45,10 +45,6 @@
         return{
             restrict: "E",
             scope: true,
-            template: '' +
-            '<vz-selected-item-overlay>' +
-            '   <vz-resize-handle vz-overlay-handle="bottom right"></vz-resize-handle>' +
-            '</vz-selected-item-overlay>',
             controller: function($element, $scope, $attrs){
                 var positionInterceptors = [];
                 var resizeInterceptors = [];
