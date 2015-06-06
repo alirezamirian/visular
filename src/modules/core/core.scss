@@ -23,21 +23,83 @@ vz-diagram > svg{
 }
 
 vz-resize-handle{
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   background: #fff;
   border: 1px solid #a6a6a6;
+}
+
+
+vz-resize-handle[vz-overlay-handle="top left"]{
+  cursor: nw-resize;
+}
+vz-resize-handle[vz-overlay-handle="top"]{
+  cursor: n-resize;
+}
+vz-resize-handle[vz-overlay-handle="top right"]{
+  cursor: ne-resize;
+}
+vz-resize-handle[vz-overlay-handle="right"]{
+  cursor: e-resize;
 }
 vz-resize-handle[vz-overlay-handle="bottom right"]{
   cursor: nwse-resize;
 }
+vz-resize-handle[vz-overlay-handle="bottom"]{
+  cursor: s-resize;
+}
+vz-resize-handle[vz-overlay-handle="bottom left"]{
+  cursor: sw-resize;
+}
+vz-resize-handle[vz-overlay-handle="left"]{
+  cursor: w-resize;
+}
+
+
 [vz-overlay-handle]{
   position: absolute;
+}
+
+
+[vz-overlay-handle="top left"]{
+  top: 0;
+  left: 0;
+  transform: translateX(-51%) translateY(-50%);
+}
+[vz-overlay-handle="top"]{
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-51%);
+}
+[vz-overlay-handle="top right"]{
+  top: 0;
+  right: 0;
+  transform: translateX(50%) translateY(-50%);
+}
+[vz-overlay-handle="right"]{
+  top: 50%;
+  right: 0;
+  transform: translateX(50%) translateY(-50%);
 }
 [vz-overlay-handle="bottom right"]{
   bottom: 0;
   right: 0;
   transform: translateX(50%) translateY(50%);
+}
+[vz-overlay-handle="bottom"]{
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(50%);
+}
+[vz-overlay-handle="bottom left"]{
+  bottom: 0;
+  left: 0;
+  transform: translateX(-51%) translateY(50%);
+}
+[vz-overlay-handle="left"]{
+  top: 50%;
+  left: 0;
+  transform: translateX(-51%) translateY(-50%);
 }
 
 .vz-selected-item-overlay{

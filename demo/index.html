@@ -2,7 +2,7 @@
 <html ng-app="demoApp">
 <head lang="en">
     <meta charset="UTF-8">
-    <title>visular Demo</title>
+    <title>Visular Demo</title>
 
 
     <script src="lib/jquery-1.11.2.min.js"></script>
@@ -81,8 +81,9 @@
         <md-divider></md-divider>
         <vz-diagram
                 class="demo-diagram"
-                vz-diagram="ctrl.diagram"
+                vz-diagram-model="ctrl.diagram"
                 vz-guideline
+                vz-resize-overlay
                 vz-selected-item="ctrl.selectedItem">
         </vz-diagram>
     </div>

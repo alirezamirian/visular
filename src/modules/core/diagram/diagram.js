@@ -2,7 +2,8 @@
     "use strict";
     angular.module("visular.core")
         .factory("VzDiagramModel", VzDiagramModel)
-        .directive("vzDiagram", vzDiagramDirective);
+        .directive("vzDiagram", vzDiagramDirective)
+        .directive("vzSelectedItemOverlay", vzSelectedItemOverlayDirective)
 
 
     function VzDiagramModel(VzElementModel, VzLinkModel){
@@ -24,66 +25,69 @@
             }
         }
     }
-    function vzDiagramDirective($compile){
+    function vzSelectedItemOverlayDirective(){
         return{
             restrict: "E",
-            scope:{
-                diagram: "=vzDiagram",
-                selectedItem: "=?vzSelectedItem"
-            },
+            transclude: true,
             template:
-            '<svg>' +
-            '   <g ng-repeat="link in diagram.links" vz-link="link"></g>' +
-            '   <g ng-repeat="elem in diagram.elements" vz-element="elem"></g>' +
-            '</svg>' +
-            '<div class="vz-selected-item-overlay"' +
-            '   ng-show="selectedItem" ' +
-            '   ng-style="{' +
-            '       left: selectedItem.position.x || -1000, ' +
-            '       top: selectedItem.position.y || -1000,' +
-            '       width: selectedItem.size.width || 1,' +
-            '       height: selectedItem.size.height || 1}">' +
+                '<div class="vz-selected-item-overlay"\
+                    ng-transclude\
+                    ng-show="vz.selectedItem" \
+                    ng-style="{\
+                        left: vz.selectedItem.position.x || -1000, \
+                        top: vz.selectedItem.position.y || -1000, \
+                        width: vz.selectedItem.size.width || 1, \
+                        height: vz.selectedItem.size.height || 1}"> \
+                </div>'
+        }
+    }
+    function vzDiagramDirective($compile, $parse){
+        return{
+            restrict: "E",
+            scope: true,
+            template: '' +
+            '<vz-selected-item-overlay>' +
             '   <vz-resize-handle vz-overlay-handle="bottom right"></vz-resize-handle>' +
-            '</div>',
-            controller: function($element, $scope){
-                var dragInterceptors = [];
+            '</vz-selected-item-overlay>',
+            controller: function($element, $scope, $attrs){
+                var positionInterceptors = [];
                 var resizeInterceptors = [];
                 this.elem = $element;
-                this.diagram = $scope.diagram;
+                var vz = this;
+                $scope.$watch($attrs.vzDiagramModel, function(){
+                    vz.diagram = $parse($attrs.vzDiagramModel)($scope);
+                });
                 this.bringToFront = function(elementModel){
-                    var idx = $scope.diagram.elements.indexOf(elementModel);
+                    var idx = this.diagram.elements.indexOf(elementModel);
                     if(idx>-1){
-                        $scope.diagram.elements.splice(idx,1);
-                        $scope.diagram.elements.push(elementModel);
+                        this.diagram.elements.splice(idx,1);
+                        this.diagram.elements.push(elementModel);
                     }
-                };
-                this.selectedItem = function(){
-                    return $scope.selectedItem;
                 };
                 this.isSelected = function(item){
                     // this can be extended for multiple selection
-                    return $scope.selectedItem == item;
+                    return this.selectedItem == item;
                 }
                 this.select = function(elementModel){
-                    $scope.selectedItem = elementModel;
+                    this.selectedItem = elementModel;
                 };
                 this.unSelect = function(){
-                    $scope.selectedItem = null;
+                    this.selectedItem = null;
                 };
                 this.drag = {
                     started: function(draggingElement, mouseEvent){
-                        dragInterceptors.forEach(function(item){
-                            item.dragStartHandler(draggingElement, mouseEvent);
+                        positionInterceptors.forEach(function(item){
+                            item.movementStartHandler(draggingElement, mouseEvent);
                         });
                     },
                     finished: function(draggingElement, mouseEvent){
-                        dragInterceptors.forEach(function(item){
-                            item.dragFinishHandler(draggingElement, mouseEvent);
+                        positionInterceptors.forEach(function(item){
+                            item.movementFinishHandler(draggingElement, mouseEvent);
                         });
                     },
                     to: function(pos, draggingElement, mouseEvent){
                         var interceptedPos = pos;
-                        dragInterceptors.forEach(function(item){
+                        positionInterceptors.forEach(function(item){
                             interceptedPos = item.interceptor(interceptedPos, draggingElement, mouseEvent);
                         });
                         draggingElement.position.x = interceptedPos.x;
@@ -99,15 +103,15 @@
 
                     resizingElement.size.width = interceptedRect.width;
                     resizingElement.size.height = interceptedRect.height;
-                    /*resizingElement.position.x = interceptedRect.x;
-                     resizingElement.position.y = interceptedRect.y;*/
+                    resizingElement.position.x = interceptedRect.x;
+                    resizingElement.position.y = interceptedRect.y;
 
                 };
-                this.addElementDragInterceptor = function(dragInterceptor, dragStartHandler, dragFinishHandler){
-                    dragInterceptors.push({
-                        interceptor: dragInterceptor || angular.identity,
-                        dragStartHandler: dragStartHandler || angular.noop,
-                        dragFinishHandler: dragFinishHandler || angular.noop
+                this.addElementPositionInterceptor = function(positionInterceptor, movementStartHandler, movementFinishHandler){
+                    positionInterceptors.push({
+                        interceptor: positionInterceptor || angular.identity,
+                        movementStartHandler: movementStartHandler || angular.noop,
+                        movementFinishHandler: movementFinishHandler || angular.noop
                     })
                 };
                 this.addElementResizeInterceptor = function(resizeInterceptor){
@@ -122,16 +126,22 @@
                     return overlayScope;
                 }
             },
-            link: function(scope, elem, attrs, ctrl){
-
-                console.log("elem", elem.find("svg:first"))
-                elem.bind("mousedown", function(evt){
-                    console.log("mousedown", evt);
-                    scope.$apply(function(){
-                        ctrl.unSelect();
-                    })
-                });
+            controllerAs: "vz",
+            compile: function(tElem){
+                tElem.prepend(
+                    '<svg>' +
+                    '   <g ng-repeat="link in vz.diagram.links" vz-link="link"></g>' +
+                    '   <g ng-repeat="elem in vz.diagram.elements" vz-element="elem"></g>' +
+                    '</svg>');
+                return linkingFn;
             }
+        };
+        function linkingFn(scope, elem, attrs, ctrl){
+            elem.bind("mousedown", function(evt){
+                scope.$apply(function(){
+                    ctrl.unSelect();
+                })
+            });
         }
     }
 })();

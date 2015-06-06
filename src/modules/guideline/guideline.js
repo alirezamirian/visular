@@ -14,7 +14,7 @@
  * `vzGuidelineFactory` is a service with a `create()` method, which creates a guideline system object
  *  that handles all positioning semantics for a guideline system.
  *
- *  `vzGuideline` directive makes use of vzDiagram controller api to register a **drag interceptor**
+ *  `vzGuideline` directive makes use of vzDiagram controller api to register a **element position interceptor**
  *  for the diagram. It also adds an overlay to diagram for visualizing guidelines
  */
 angular.module("visular.guideline", [])
@@ -54,7 +54,7 @@ angular.module("visular.guideline", [])
                     scope = diagramController.addOverlay(overlayTemplate);
 
                 var guidelineSystem = null;
-                function dragStarted(element){
+                function movementStart(element){
                     function otherRectsFilter(elementModel){
                         return elementModel != element;
                     }
@@ -72,17 +72,17 @@ angular.module("visular.guideline", [])
                     );
                     scope.guidelines = guidelineSystem.activeGuidelines;
                 }
-                function dragFinished(){
+                function movementFinished(){
                     delete guidelineSystem;
                     scope.guidelines = [];
                 }
-                function dragInterceptor(pointToMove, draggingElement){
+                function positionInterceptor(pointToMove){
                     guidelineSystem.moveTargetToPosition(pointToMove);
                     return guidelineSystem.guidedTargetRect.origin();
                 }
                 diagramController
-                    .addElementDragInterceptor(
-                    dragInterceptor, dragStarted, dragFinished);
+                    .addElementPositionInterceptor(
+                    positionInterceptor, movementStart, movementFinished);
             }
         }
     })
