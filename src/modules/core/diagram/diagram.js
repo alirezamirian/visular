@@ -152,6 +152,9 @@
                     ctrl.unSelect();
                 })
             });
+            if(attrs.vzDiagramController){
+                $parse(attrs.vzDiagramController).assign(scope.$parent, scope.vz);
+            }
         }
     }
 })();

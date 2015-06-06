@@ -32,17 +32,17 @@
     <div class="demo-inspector md-whiteframe-z1" layout-margin layout="column">
         <md-subheader>Inspector</md-subheader>
         <md-divider></md-divider>
-        <div ng-if="!ctrl.selectedItem" flex
+        <div ng-if="!diagram.selectedItem" flex
              layout="column" layout-align="center center" layout-margin
              class="demo-placeholder">
             No Item Selected
         </div>
         <div layout="column" layout-margin
-             ng-if="ctrl.selectedItem" ng-form="ctrl.inspectorForm">
-            <md-input-container ng-if="ctrl.selectedItem.name !== undefined">
+             ng-if="diagram.selectedItem" ng-form="ctrl.inspectorForm">
+            <md-input-container ng-if="diagram.selectedItem.name !== undefined">
                 <label>Name</label>
                 <input type="text" name="name"
-                       ng-model="ctrl.selectedItem.name" />
+                       ng-model="diagram.selectedItem.name" />
                 <div ng-messages="ctrl.inspectorForm.name.$error">
                     <div ng-message="required">Unnamed elements are bad!</div>
                 </div>
@@ -50,7 +50,7 @@
             <md-input-container>
                 <label>Width</label>
                 <input required type="number" name="width" min="10" max="500"
-                       ng-model="ctrl.selectedItem.size.width" />
+                       ng-model="diagram.selectedItem.size.width" />
                 <div ng-messages="ctrl.inspectorForm.width.$error">
                     <div ng-message="min">Man! This is too tiny!</div>
                     <div ng-message="max">Giant element!</div>
@@ -60,19 +60,19 @@
 
                 <label>Height</label>
                 <input type="number"
-                       ng-model="ctrl.selectedItem.size.height" />
+                       ng-model="diagram.selectedItem.size.height" />
             </md-input-container>
             <md-input-container>
 
                 <label>X</label>
                 <input type="number"
-                       ng-model="ctrl.selectedItem.position.x" />
+                       ng-model="diagram.selectedItem.position.x" />
             </md-input-container>
             <md-input-container>
 
                 <label>Y</label>
                 <input type="number"
-                       ng-model="ctrl.selectedItem.position.y" />
+                       ng-model="diagram.selectedItem.position.y" />
             </md-input-container>
         </div>
     </div>
@@ -82,9 +82,9 @@
         <vz-diagram
                 class="demo-diagram"
                 vz-diagram-model="ctrl.diagram"
+                vz-diagram-controller="diagram"
                 vz-guideline
-                vz-resize-handles
-                vz-selected-item="ctrl.selectedItem">
+                vz-resize-handles>
         </vz-diagram>
     </div>
 
