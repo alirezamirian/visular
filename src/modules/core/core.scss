@@ -11,15 +11,19 @@ vz-diagram > svg{
   display: inline-block;
 }
 
-.vz-selected-item-overlay{
+[vz-selected-item-overlay]{
   width: 100px;
   height: 80px;
   position: absolute;
   pointer-events: none;
 //  z-index: -1;
 }
-.vz-selected-item-overlay > *{
+[vz-selected-item-overlay] > *{
   pointer-events: auto;
+}
+[vz-selected-item-overlay]{
+  border: 1px solid #939393;
+  box-sizing: border-box;
 }
 
 vz-resize-handle{
@@ -102,7 +106,3 @@ vz-resize-handle[vz-overlay-handle="left"]{
   transform: translateX(-51%) translateY(-50%);
 }
 
-.vz-selected-item-overlay{
-  border: 1px solid #939393;
-  box-sizing: border-box;
-}

@@ -25,7 +25,7 @@
             require: "vzDiagram",
             compile: function(tElem){
                 tElem.append(
-                    '<vz-selected-item-overlay>' +
+                    '<div vz-selected-item-overlay>' +
                     '   <vz-resize-handle vz-overlay-handle="top left"></vz-resize-handle>' +
                     '   <vz-resize-handle vz-overlay-handle="top"></vz-resize-handle>' +
                     '   <vz-resize-handle vz-overlay-handle="top right"></vz-resize-handle>' +
@@ -34,7 +34,7 @@
                     '   <vz-resize-handle vz-overlay-handle="bottom"></vz-resize-handle>' +
                     '   <vz-resize-handle vz-overlay-handle="bottom left"></vz-resize-handle>' +
                     '   <vz-resize-handle vz-overlay-handle="left"></vz-resize-handle>' +
-                    '</vz-selected-item-overlay>');
+                    '</div>');
             }
         }
     }

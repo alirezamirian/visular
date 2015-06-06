@@ -27,20 +27,34 @@
     }
     function vzSelectedItemOverlayDirective(){
         return{
-            restrict: "E",
-            transclude: true,
-            template:
-                '<div class="vz-selected-item-overlay"\
-                    ng-transclude\
-                    ng-show="vz.selectedItem" \
-                    ng-style="{\
-                        left: vz.selectedItem.position.x || -1000, \
-                        top: vz.selectedItem.position.y || -1000, \
-                        width: vz.selectedItem.size.width || 1, \
-                        height: vz.selectedItem.size.height || 1}"> \
-                </div>'
+            restrict: "A",
+            require: '^vzDiagram',
+            link: function(scope, elem, attrs, diagramController){
+                scope.$watch(selectedItem, function(selectedItem){
+                    selectedItem ? elem.show() : elem.hide();
+                });
+                scope.$watch(position, function(position){
+                    elem.css("top", position ? position.y : -1000);
+                    elem.css("left", position ? position.x : -1000);
+                }, true);
+                scope.$watch(size, function(size){
+                    elem.css("width", size ? size.width : 1);
+                    elem.css("height", size ? size.height : 1);
+                }, true);
+
+                function selectedItem(){
+                    return diagramController.selectedItem
+                }
+                function size(){
+                    return diagramController.selectedItem ? diagramController.selectedItem.size : null;
+                }
+                function position(){
+                    return diagramController.selectedItem ? diagramController.selectedItem.position : null;
+                }
+            }
         }
     }
+    // TODO: add keyboard shortcuts (into a separate module)
     function vzDiagramDirective($compile, $parse){
         return{
             restrict: "E",
