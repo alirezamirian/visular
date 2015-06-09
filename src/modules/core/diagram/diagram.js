@@ -71,6 +71,7 @@
                 var positionInterceptors = [];
                 var resizeInterceptors = [];
                 this.elem = $element;
+                this.rootSvgElem = $element.find("svg:first");
                 var vz = this;
                 $scope.$watch($attrs.vzDiagramModel, function(){
                     vz.diagram = $parse($attrs.vzDiagramModel)($scope);
@@ -151,9 +152,12 @@
         };
         function linkingFn(scope, elem, attrs, ctrl){
             elem.bind("mousedown", function(evt){
-                scope.$apply(function(){
-                    ctrl.unSelect();
-                })
+                if(evt.target == ctrl.rootSvgElem.get(0)){
+                    scope.$apply(function(){
+                        ctrl.unSelect();
+                    })
+                }
+
             });
             if(attrs.vzDiagramController){
                 $parse(attrs.vzDiagramController).assign(scope.$parent, scope.vz);
