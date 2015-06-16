@@ -34,12 +34,14 @@
                     selectedItem ? elem.show() : elem.hide();
                 });
                 scope.$watch(position, function(position){
-                    elem.css("top", position ? position.y : -1000);
-                    elem.css("left", position ? position.x : -1000);
+                    var xOffset = -diagramController.zoom.center.x * (diagramController.zoom.factor-1);
+                    var yOffset = -diagramController.zoom.center.y * (diagramController.zoom.factor-1);
+                    elem.css("top", position ? (position.y + yOffset): -10000);
+                    elem.css("left", position ? (position.x + xOffset) : -10000);
                 }, true);
                 scope.$watch(size, function(size){
-                    elem.css("width", size ? size.width : 1);
-                    elem.css("height", size ? size.height : 1);
+                    elem.css("width", size ? (size.width * diagramController.zoom.factor) : 1);
+                    elem.css("height", size ? (size.height * diagramController.zoom.factor) : 1);
                 }, true);
 
                 function selectedItem(){
@@ -61,9 +63,14 @@
             scope: true,
             transclude: true,
             template: '' +
-            '<svg>' +
-            '   <g ng-repeat="link in vz.diagram.links" vz-link="link"></g>' +
-            '   <g ng-repeat="elem in vz.diagram.elements" vz-element="elem"></g>' +
+            '<svg >' +
+            '   <g ng-attr-transform="translate( ' +
+            '   {{-vz.zoom.center.x*(vz.zoom.factor-1)}}, ' +
+            '   {{-vz.zoom.center.y*(vz.zoom.factor-1)}} ) ' +
+            '   scale({{vz.zoom.factor}})">' +
+            '       <g ng-repeat="link in vz.diagram.links" vz-link="link"></g>' +
+            '       <g ng-repeat="elem in vz.diagram.elements" vz-element="elem"></g>' +
+            '   </g>' +
             '</svg>' +
             '<div ng-transclude>' +
             '</div>',
@@ -148,16 +155,9 @@
 
 
                 this.zoom = {
-                    factor: 1,
-                    center: g.point(200,200)
+                    factor: 1.3,
+                    center: g.point(-500, -100)
                 };
-                $scope.$watch(function(){
-                    return vz.zoom;
-                }, function(zoom){
-                    if(!zoom)
-                        return;
-                    console.log("svg", vz.rootSvgElem);
-                },true);
 
             },
             controllerAs: "vz",
