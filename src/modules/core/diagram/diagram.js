@@ -59,6 +59,14 @@
         return{
             restrict: "E",
             scope: true,
+            transclude: true,
+            template: '' +
+            '<svg>' +
+            '   <g ng-repeat="link in vz.diagram.links" vz-link="link"></g>' +
+            '   <g ng-repeat="elem in vz.diagram.elements" vz-element="elem"></g>' +
+            '</svg>' +
+            '<div ng-transclude>' +
+            '</div>',
             controller: function($element, $scope, $attrs){
                 var positionInterceptors = [];
                 var resizeInterceptors = [];
@@ -136,6 +144,21 @@
                     $compile(overlay)(overlayScope);
                     return overlayScope;
                 }
+
+
+
+                this.zoom = {
+                    factor: 1,
+                    center: g.point(200,200)
+                };
+                $scope.$watch(function(){
+                    return vz.zoom;
+                }, function(zoom){
+                    if(!zoom)
+                        return;
+                    console.log("svg", vz.rootSvgElem);
+                },true);
+
             },
             controllerAs: "vz",
             compile: function(){

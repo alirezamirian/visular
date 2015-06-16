@@ -85,10 +85,6 @@
                 vz-diagram-controller="diagram"
                 vz-guideline
                 vz-resize-handles>
-            <svg>
-                <g ng-repeat="link in vz.diagram.links" vz-link="link"></g>
-                <g ng-repeat="elem in vz.diagram.elements" vz-element="elem"></g>
-            </svg>
             <div vz-selected-item-overlay class="md-whiteframe-z4 custom-overlay-1"
                  ng-class="{'active': diagram.selectedItem}">
                 <md-button class="md-raised md-fab md-mini top">+</md-button>
