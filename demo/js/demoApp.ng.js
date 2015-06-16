@@ -22,6 +22,7 @@ angular.module("demoApp", ['visular', 'ngMaterial', 'ngMessages'])
         startNoneEvent.position.y = 125;
         startNoneEvent.size.width = 50;
         startNoneEvent.size.height = 50;
+        startNoneEvent.name = "Start";
 
         endNoneEvent.position.x = 600;
         endNoneEvent.position.y = 125;
