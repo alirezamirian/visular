@@ -59,14 +59,6 @@
         return{
             restrict: "E",
             scope: true,
-            transclude: true,
-            template: '' +
-            '<svg>' +
-            '   <g ng-repeat="link in vz.diagram.links" vz-link="link"></g>' +
-            '   <g ng-repeat="elem in vz.diagram.elements" vz-element="elem"></g>' +
-            '</svg>' +
-            '<div ng-transclude>' +
-            '</div>',
             controller: function($element, $scope, $attrs){
                 var positionInterceptors = [];
                 var resizeInterceptors = [];

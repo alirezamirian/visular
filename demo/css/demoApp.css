@@ -12,3 +12,42 @@
 .demo-placeholder{
     color: #aaa;
 }
+
+
+.custom-overlay-1.active .md-button{
+    transform: scale(.8);
+    opacity: 1;
+}
+.custom-overlay-1.active .md-button:hover {
+    transform: scale(1);
+}
+.custom-overlay-1 .md-button{
+    position:absolute;
+    font-size:30px;
+    transition: transform .1s ease-out;
+    pointer-events: auto;
+}
+.custom-overlay-1 .md-button.right{
+    right: -45px;
+    top:50%;
+    margin:-20px 0 0 0;
+}
+.custom-overlay-1 .md-button.left{
+    left: -45px;
+    top:50%;
+    margin:-20px 0 0 0;
+}
+.custom-overlay-1 .md-button.top{
+    top: -45px;
+    left:50%;
+    margin:0 0 0 -20px;
+}
+.custom-overlay-1 .md-button.bottom{
+    bottom: -45px;
+    left:50%;
+    margin:0 0 0 -20px;
+}
+.custom-overlay-1:not(.active) .md-button{
+    transform: scale(0);
+    opacity: 0;
+}

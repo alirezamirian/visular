@@ -62,7 +62,7 @@
                 <input type="number"
                        ng-model="diagram.selectedItem.size.height" />
             </md-input-container>
-            <md-input-container>
+            <!--<md-input-container>
 
                 <label>X</label>
                 <input type="number"
@@ -73,7 +73,7 @@
                 <label>Y</label>
                 <input type="number"
                        ng-model="diagram.selectedItem.position.y" />
-            </md-input-container>
+            </md-input-container>-->
         </div>
     </div>
     <div flex layout-margin class="md-whiteframe-z1">
@@ -85,6 +85,17 @@
                 vz-diagram-controller="diagram"
                 vz-guideline
                 vz-resize-handles>
+            <svg>
+                <g ng-repeat="link in vz.diagram.links" vz-link="link"></g>
+                <g ng-repeat="elem in vz.diagram.elements" vz-element="elem"></g>
+            </svg>
+            <div vz-selected-item-overlay class="md-whiteframe-z4 custom-overlay-1"
+                 ng-class="{'active': diagram.selectedItem}">
+                <md-button class="md-raised md-fab md-mini top">+</md-button>
+                <md-button class="md-raised md-fab md-mini right">+</md-button>
+                <md-button class="md-raised md-fab md-mini bottom">+</md-button>
+                <md-button class="md-raised md-fab md-mini left">+</md-button>
+            </div>
         </vz-diagram>
     </div>
 

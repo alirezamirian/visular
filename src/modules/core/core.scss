@@ -10,6 +10,9 @@ vz-diagram > svg{
   min-height: inherit;
   display: inline-block;
 }
+vz-diagram .vz-element{
+  overflow: unset;
+}
 
 [vz-selected-item-overlay]{
   width: 100px;
