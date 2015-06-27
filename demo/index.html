@@ -33,9 +33,15 @@
         <md-subheader>Inspector</md-subheader>
         <md-divider></md-divider>
         <div ng-if="!diagram.selectedItem" flex
-             layout="column" layout-align="center center" layout-margin
+             layout="column" layout-align="start center" layout-margin
              class="demo-placeholder">
-            No Item Selected
+            <md-input-container>
+                <label>Zoom</label>
+                <input type="number" ng-model="diagram.zoom.factor" />
+            </md-input-container>
+            <input ng-model="diagram.zoom.center.x" type="number" />
+            <input ng-model="diagram.zoom.center.y" type="number" />
+            <div flex layout="column" layout-align="center">No Item Selected</div>
         </div>
         <div layout="column" layout-margin
              ng-if="diagram.selectedItem" ng-form="ctrl.inspectorForm">
@@ -84,6 +90,7 @@
                 vz-diagram-model="ctrl.diagram"
                 vz-diagram-controller="diagram"
                 vz-guideline
+                vz-zoom
                 vz-resize-handles>
             <div vz-selected-item-overlay class="md-whiteframe-z4 custom-overlay-1"
                  ng-class="{'active': diagram.selectedItem}">
