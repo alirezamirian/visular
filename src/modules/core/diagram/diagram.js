@@ -34,14 +34,13 @@
                     selectedItem ? elem.show() : elem.hide();
                 });
                 scope.$watch(position, function(position){
-                    var xOffset = -diagramController.zoom.center.x * (diagramController.zoom.factor-1);
-                    var yOffset = -diagramController.zoom.center.y * (diagramController.zoom.factor-1);
-                    elem.css("top", position ? (position.y + yOffset): -10000);
-                    elem.css("left", position ? (position.x + xOffset) : -10000);
+
+                    elem.css("top", position ? (position.y): -10000);
+                    elem.css("left", position ? (position.x) : -10000);
                 }, true);
                 scope.$watch(size, function(size){
-                    elem.css("width", size ? (size.width * diagramController.zoom.factor) : 1);
-                    elem.css("height", size ? (size.height * diagramController.zoom.factor) : 1);
+                    elem.css("width", size ? (size.width) : 1);
+                    elem.css("height", size ? (size.height) : 1);
                 }, true);
 
                 function selectedItem(){
@@ -64,10 +63,7 @@
             transclude: true,
             template: '' +
             '<svg >' +
-            '   <g ng-attr-transform="translate( ' +
-            '   {{-vz.zoom.center.x*(vz.zoom.factor-1)}}, ' +
-            '   {{-vz.zoom.center.y*(vz.zoom.factor-1)}} ) ' +
-            '   scale({{vz.zoom.factor}})">' +
+            '   <g>' +
             '       <g ng-repeat="link in vz.diagram.links" vz-link="link"></g>' +
             '       <g ng-repeat="elem in vz.diagram.elements" vz-element="elem"></g>' +
             '   </g>' +
@@ -79,6 +75,7 @@
                 var resizeInterceptors = [];
                 this.elem = $element;
                 this.rootSvgElem = $element.find("svg:first");
+                this.viewport = this.rootSvgElem.find(">g:first");
                 var vz = this;
                 $scope.$watch($attrs.vzDiagramModel, function(){
                     vz.diagram = $parse($attrs.vzDiagramModel)($scope);
@@ -150,14 +147,44 @@
                     var overlay = angular.element(overlayHtml).appendTo($element);
                     $compile(overlay)(overlayScope);
                     return overlayScope;
-                }
-
-
-
-                this.zoom = {
-                    factor: 1.3,
-                    center: g.point(-500, -100)
                 };
+
+                this.zoom = 1;
+                this.pan = {x:0, y: 0};
+                var ctm = {
+                    a: vz.zoom,
+                    b: 0,
+                    c: 0,
+                    d: vz.zoom,
+                    e: vz.pan.x,
+                    f: vz.pan.y
+                };
+                this.getTransformationMatrix = function(){
+                    var svgMatrix = vz.rootSvgElem[0].createSVGMatrix();
+                    svgMatrix.a = ctm.a;
+                    svgMatrix.b = ctm.b;
+                    svgMatrix.c = ctm.c;
+                    svgMatrix.d = ctm.d;
+                    svgMatrix.e = ctm.e;
+                    svgMatrix.f = ctm.f;
+                    return svgMatrix;
+                };
+                // watch for changes in transformation matrix
+                $scope.$watch(function(){
+                    ctm.a = vz.zoom;
+                    ctm.d = vz.zoom;
+                    ctm.e = vz.pan.x;
+                    ctm.f = vz.pan.y;
+                    return ctm;
+                }, function(matrix){
+                    if(matrix){
+                        console.log("transformation changed", matrix);
+                        var transformStr = 'matrix(' + matrix.a + ',' + matrix.b + ',' + matrix.c + ',' + matrix.d
+                            + ',' + matrix.e + ',' + matrix.f + ')';
+                        vz.viewport[0].setAttributeNS(null, 'transform', transformStr);
+                    }
+                }, true);
+
 
             },
             controllerAs: "vz",

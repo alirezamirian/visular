@@ -18,30 +18,41 @@
 
                 scope.$on("$destroy", cleanUp);
                 init();
-                var wheelPosition = {x: 0, y: 0};
                 function wheelHandler(event){
-                    var diaOffset = vzDiagramCtrl.elem.offset();
-                    var x = event.originalEvent.pageX - diaOffset.left +5;
-                    var y = event.originalEvent.pageY - diaOffset.top-2;
-                    var positionChanged = false;
-                    if(wheelPosition.x != x || wheelPosition.y != y){
-                        console.log("position changed")
-                        positionChanged = true;
-                    }
-
-
-                    var delta = event.originalEvent.deltaY;
-                    var translation = vzDiagramCtrl.zoom.center;
+                    // Inspired by https://github.com/ariutta/svg-pan-zoom
+                    var point = getEventPoint(event, vzDiagramCtrl.rootSvgElem),
+                        oldCTM = vzDiagramCtrl.getTransformationMatrix(),
+                        relativePoint = point.matrixTransform(oldCTM.inverse()),
+                        delta = event.originalEvent.deltaY,
+                        newZoom = oldCTM.a - delta*deltaNormalizer,
+                        modifier = vzDiagramCtrl.rootSvgElem[0].createSVGMatrix()
+                            .translate(relativePoint.x, relativePoint.y)
+                            .scale(newZoom/oldCTM.a)
+                            .translate(-relativePoint.x, -relativePoint.y);
+                    console.log(delta);
+                    var newCTM = oldCTM.multiply(modifier);
                     scope.$apply(function(){
-                        if(positionChanged){
-                            vzDiagramCtrl.zoom.center.x = vzDiagramCtrl.zoom.center.x + (x-vzDiagramCtrl.zoom.center.x)/vzDiagramCtrl.zoom.factor;
-                            vzDiagramCtrl.zoom.center.y = vzDiagramCtrl.zoom.center.y + (y-vzDiagramCtrl.zoom.center.y)/vzDiagramCtrl.zoom.factor;
-                        }
-                        vzDiagramCtrl.zoom.factor *= (1 - deltaNormalizer * delta);
+                        vzDiagramCtrl.pan.x = newCTM.e;
+                        vzDiagramCtrl.pan.y = newCTM.f;
+                        vzDiagramCtrl.zoom = newCTM.a;
                     });
-                    wheelPosition.x = x;
-                    wheelPosition.y = y;
                     return false;
+                }
+
+                /**
+                 * returns a SvgPoint instance indicating the event coordinates
+                 * // TODO: move it to a seperate service
+                 * // TODO: add support for touch
+                 * @param event: event object
+                 * @param svg: root svg element
+                 * @returns SvgPoint
+                 */
+                function getEventPoint(event, svg){
+                    var diaOffset = svg.offset();
+                    var point = svg[0].createSVGPoint();
+                    point.x = event.originalEvent.pageX - diaOffset.left;
+                    point.y = event.originalEvent.pageY - diaOffset.top;
+                    return point;
                 }
                 function init(){
                     elem.bind("wheel", wheelHandler);
