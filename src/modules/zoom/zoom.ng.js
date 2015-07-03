@@ -6,10 +6,11 @@
 
 (function(angular) {
     angular.module("visular.zoom", [])
-        .directive("vzZoom", vzZoomDirectiveFactory);
+        .directive("vzZoomOnWheel", vzZoomOnWheelDirectiveFactory);
 
 
-    function vzZoomDirectiveFactory(){
+
+    function vzZoomOnWheelDirectiveFactory(){
         var zoomScaleSensitivity = .1;
         return{
             restrict: "A",
