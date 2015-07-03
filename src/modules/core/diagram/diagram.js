@@ -149,33 +149,32 @@
                     return overlayScope;
                 };
 
-                this.zoom = 1;
-                this.pan = {x:0, y: 0};
-                var ctm = {
-                    a: vz.zoom,
-                    b: 0,
-                    c: 0,
-                    d: vz.zoom,
-                    e: vz.pan.x,
-                    f: vz.pan.y
-                };
-                this.getTransformationMatrix = function(){
-                    var svgMatrix = vz.rootSvgElem[0].createSVGMatrix();
-                    svgMatrix.a = ctm.a;
-                    svgMatrix.b = ctm.b;
-                    svgMatrix.c = ctm.c;
-                    svgMatrix.d = ctm.d;
-                    svgMatrix.e = ctm.e;
-                    svgMatrix.f = ctm.f;
-                    return svgMatrix;
-                };
-                // watch for changes in transformation matrix
-                $scope.$watch(function(){
-                    ctm.a = vz.zoom;
-                    ctm.d = vz.zoom;
-                    ctm.e = vz.pan.x;
-                    ctm.f = vz.pan.y;
+                var ctm = this.rootSvgElem[0].createSVGMatrix();
+                this.getCTM = function(){
                     return ctm;
+                };
+                this.setCTM = function(newCTM){
+                    if(newCTM instanceof SVGMatrix){
+                        ctm.a = newCTM.a;
+                        ctm.b = newCTM.b;
+                        ctm.c = newCTM.c;
+                        ctm.d = newCTM.d;
+                        ctm.e = newCTM.e;
+                        ctm.f = newCTM.f;
+                    }
+
+                };
+                // watch for changes in transformation matrix, because of some reason, it's not possible to watch
+                // SVGMatrix instances
+                $scope.$watch(function(){
+                    return{
+                        a: ctm.a,
+                        b: ctm.b,
+                        c: ctm.c,
+                        d: ctm.d,
+                        e: ctm.e,
+                        f: ctm.f
+                    }
                 }, function(matrix){
                     if(matrix){
                         console.log("transformation changed", matrix);

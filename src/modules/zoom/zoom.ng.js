@@ -23,7 +23,7 @@
                     // Inspired by https://github.com/ariutta/svg-pan-zoom
                     var evt = event.originalEvent,
                         point = getEventPoint(event, vzDiagramCtrl.rootSvgElem),
-                        oldCTM = vzDiagramCtrl.getTransformationMatrix(),
+                        oldCTM = vzDiagramCtrl.getCTM(),
                         relativePoint = point.matrixTransform(oldCTM.inverse());
 
 
@@ -60,9 +60,7 @@
                     console.log(delta);
                     var newCTM = oldCTM.multiply(modifier);
                     scope.$apply(function(){
-                        vzDiagramCtrl.pan.x = newCTM.e;
-                        vzDiagramCtrl.pan.y = newCTM.f;
-                        vzDiagramCtrl.zoom = newCTM.a;
+                        vzDiagramCtrl.setCTM(newCTM);
                     });
                     return false;
                 }
