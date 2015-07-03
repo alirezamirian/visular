@@ -1,3 +1,7 @@
-visular is a javascript diagramming solution based on AngularJS
+Visular is a javascript diagramming toolkit based on AngularJS
 
-it provides you with a set of directives and services...
+It provides you with a set of directives and services...
+
+#Why?
+
+#Features
