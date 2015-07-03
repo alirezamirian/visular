@@ -35,10 +35,10 @@
         <div ng-if="!diagram.selectedItem" flex
              layout="column" layout-align="start center" layout-margin
              class="demo-placeholder">
-            <md-input-container>
-                <label>Zoom</label>
-                <input type="number" ng-model="diagram.zoom" />
-            </md-input-container>
+            <div layout="row" layout-fill>
+                <md-slider flex ng-model="ctrl.zoom" ng-model-options="{getterSetter: true}"
+                           min=".1" max="5" step=".2"></md-slider>
+            </div>
             <input ng-model="diagram.pan.x" type="number" />
             <input ng-model="diagram.pan.y" type="number" />
             <div flex layout="column" layout-align="center">No Item Selected</div>
@@ -91,6 +91,8 @@
                 vz-diagram-controller="diagram"
                 vz-guideline
                 vz-zoom-on-wheel
+                vz-zoom-on-wheel-options="{requiredKeys: 'ctrl'}"
+                vz-zoom-getter-setter="ctrl.zoom"
                 vz-resize-handles>
             <div vz-selected-item-overlay class="md-whiteframe-z4 custom-overlay-1"
                  ng-class="{'active': diagram.selectedItem}">
