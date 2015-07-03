@@ -49,7 +49,7 @@ var config = {
     outputDir: 'dist/visular-' + VERSION
 };
 
-var IS_RELEASE_BUILD = true;
+var IS_RELEASE_BUILD = false;
 
 function buildScss(do_minification) {
     // var defaultThemeContents = fs.readFileSync('themes/_default-theme.scss');
