@@ -25,7 +25,7 @@
             }
         }
     }
-    function vzSelectedItemOverlayDirective(){
+    function vzSelectedItemOverlayDirective(vzSvgUtils){
         return{
             restrict: "A",
             require: '^vzDiagram',
@@ -33,16 +33,23 @@
                 scope.$watch(selectedItem, function(selectedItem){
                     selectedItem ? elem.show() : elem.hide();
                 });
-                scope.$watch(position, function(position){
-
-                    elem.css("top", position ? (position.y): -10000);
-                    elem.css("left", position ? (position.x) : -10000);
-                }, true);
-                scope.$watch(size, function(size){
-                    elem.css("width", size ? (size.width) : 1);
-                    elem.css("height", size ? (size.height) : 1);
-                }, true);
-
+                scope.$watch(position, setPosition, true);
+                scope.$watch(size, setSize, true);
+                scope.$watch(diagramController.transformStr, function(){
+                    setPosition(position());
+                    setSize(size());
+                });
+                function setPosition(position){
+                    if(position){
+                        var topLeft = vzSvgUtils.transformPoint(position.x,position.y,diagramController.getCTM());
+                        elem.css("top", position ? (topLeft.y): -10000);
+                        elem.css("left", position ? (topLeft.x) : -10000);
+                    }
+                }
+                function setSize(size){
+                    elem.css("width", size ? (size.width*diagramController.getCTM().a) : 1);
+                    elem.css("height", size ? (size.height*diagramController.getCTM().a) : 1);
+                }
                 function selectedItem(){
                     return diagramController.selectedItem
                 }
@@ -56,7 +63,7 @@
         }
     }
     // TODO: add keyboard shortcuts (into a separate module)
-    function vzDiagramDirective($compile, $parse){
+    function vzDiagramDirective($compile, $parse, $document){
         return{
             restrict: "E",
             scope: true,
@@ -178,12 +185,31 @@
                 }, function(matrix){
                     if(matrix){
                         console.log("transformation changed", matrix);
-                        var transformStr = 'matrix(' + matrix.a + ',' + matrix.b + ',' + matrix.c + ',' + matrix.d
-                            + ',' + matrix.e + ',' + matrix.f + ')';
+                        var transformStr = vz.transformStr(matrix);
                         vz.viewport[0].setAttributeNS(null, 'transform', transformStr);
                     }
                 }, true);
 
+                this.transformStr = function(){
+                    return 'matrix(' + ctm.a + ',' + ctm.b + ',' + ctm.c + ',' + ctm.d
+                    + ',' + ctm.e + ',' + ctm.f + ')';
+                };
+                this.relativePoint = function(event){
+                    var point = this.rootSvgElem[0].createSVGPoint();
+                    // if input is a point itself
+                    if(angular.isDefined(event.x) && angular.isDefined(event.y)){
+                        point.x = event.x;
+                        point.y = event.y;
+                    }
+                    // if input is a mouse event, compute the point in pixels relative to diagram
+                    else{
+                        var diaOffset = this.rootSvgElem.offset();
+                        point.x = event.originalEvent.pageX - diaOffset.left;
+                        point.y = event.originalEvent.pageY - diaOffset.top;
+                    }
+
+                    return point.matrixTransform(ctm.inverse());
+                };
 
             },
             controllerAs: "vz",
