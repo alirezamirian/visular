@@ -86,9 +86,7 @@
 
                     // Inspired by https://github.com/ariutta/svg-pan-zoom
                     var evt = event.originalEvent,
-                        point = getEventPoint(event, vzDiagramCtrl.rootSvgElem),
-                        currentCTM = vzDiagramCtrl.getCTM(),
-                        relativePoint = point.matrixTransform(currentCTM.inverse());
+                        relativePoint = vzDiagramCtrl.relativePoint(event);
 
 
                     // Default delta in case that deltaY is not available
