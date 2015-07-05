@@ -22,32 +22,28 @@
             restrict: "E",
             require: "^vzDiagram",
             link: function(scope, elem, attrs, diagramController){
-                var elemRect;
-                var elemOffsets = {};
+                var elemInitialRect;
                 new VzDraggableFactory(elem, diagramController.elem)
                     .onDragStart(function(){
-                        elemRect = diagramController.selectedItem.getRect();
-                        // elemOffsets: global offsets of element (relative to document) at the time drag has been started
-                        elemOffsets.top = diagramController.elem.offset().top + elemRect.y;
-                        elemOffsets.left = diagramController.elem.offset().left + elemRect.x;
+                        elemInitialRect = diagramController.selectedItem.getRect();
                     })
                     .onDrag(function(evt){
-                        var rect = g.rect(elemRect);
-
+                        var rect = g.rect(elemInitialRect);
+                        var eventPoint = diagramController.relativePoint(evt);
                         var positionExpression = attrs.vzOverlayHandle.toLowerCase();
                         if(positionExpression.indexOf("top")>-1){
-                            rect.height = Math.max(elemOffsets.top + elemRect.height - evt.pageY, MIN_SIZE);
-                            rect.y = (elemRect.y + elemRect.height)/* old bottom*/ - rect.height;
+                            rect.height = Math.max(elemInitialRect.y + elemInitialRect.height - eventPoint.y, MIN_SIZE);
+                            rect.y = Math.min(eventPoint.y, elemInitialRect.y + elemInitialRect.height - MIN_SIZE);
                         }
                         if(positionExpression.indexOf("bottom")>-1){
-                            rect.height = Math.max(evt.pageY - elemOffsets.top, MIN_SIZE);
+                            rect.height = Math.max(eventPoint.y - elemInitialRect.y, MIN_SIZE);
                         }
                         if(positionExpression.indexOf("left")>-1){
-                            rect.width = Math.max(elemOffsets.left + elemRect.width - evt.pageX, MIN_SIZE);
-                            rect.x = (elemRect.x + elemRect.width)/* old right*/ - rect.width;
+                            rect.width = Math.max(elemInitialRect.width + elemInitialRect.x +  - eventPoint.x, MIN_SIZE);
+                            rect.x = Math.min(eventPoint.x, elemInitialRect.x + elemInitialRect.width - MIN_SIZE);
                         }
                         if(positionExpression.indexOf("right")>-1){
-                            rect.width = Math.max(evt.pageX - elemOffsets.left, MIN_SIZE);
+                            rect.width = Math.max(eventPoint.x - elemInitialRect.x, MIN_SIZE);
                         }
 
                         diagramController
