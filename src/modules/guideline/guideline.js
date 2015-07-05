@@ -65,8 +65,14 @@ angular.module("visular.guideline", [])
                     /**
                      * TODO: elements can be filtered to a smaller set that are at least in viewport
                      */
+                    var topLeft = diagramController.relativePoint({x:0, y:0});
+                    var bottomRight = diagramController.relativePoint({
+                        x:diagramController.elem.width(),
+                        y:diagramController.elem.height()
+                    });
+
                     guidelineSystem = VzGuidelineFactory.create(
-                        g.rect(0,0,diagramController.elem.width(), diagramController.elem.height()),
+                        g.rect(topLeft.x,topLeft.y,bottomRight.x-topLeft.x, bottomRight.y-topLeft.y),
                         diagramController.diagram.elements.filter(otherRectsFilter).map(elementModelToRect),
                         element.getBBox()
                     );
@@ -139,13 +145,13 @@ angular.module("visular.guideline", [])
             var guidelines = [];
 
             // init
-            guidelines.push(new GuidelineModel(Guideline.Types.H_MIDDLE, containerRect.height/2));
-            guidelines.push(new GuidelineModel(Guideline.Types.TOP, 0));
-            guidelines.push(new GuidelineModel(Guideline.Types.BOTTOM, containerRect.height));
+            guidelines.push(new GuidelineModel(Guideline.Types.H_MIDDLE, containerRect.y+containerRect.height/2));
+            guidelines.push(new GuidelineModel(Guideline.Types.TOP, containerRect.y));
+            guidelines.push(new GuidelineModel(Guideline.Types.BOTTOM, containerRect.y+containerRect.height));
 
-            guidelines.push(new GuidelineModel(Guideline.Types.V_MIDDLE, containerRect.width/2));
-            guidelines.push(new GuidelineModel(Guideline.Types.LEFT, 0));
-            guidelines.push(new GuidelineModel(Guideline.Types.RIGHT, containerRect.width));
+            guidelines.push(new GuidelineModel(Guideline.Types.V_MIDDLE, containerRect.x+containerRect.width/2));
+            guidelines.push(new GuidelineModel(Guideline.Types.LEFT, containerRect.x));
+            guidelines.push(new GuidelineModel(Guideline.Types.RIGHT, containerRect.x+containerRect.width));
 
             angular.forEach(otherRects, function(rect){
                 guidelines.push(new GuidelineModel(Guideline.Types.H_MIDDLE, rect.y+rect.height/2));
