@@ -1,5 +1,5 @@
 #Zoom
-- fix broken parts after adding zoom module
+- <s>fix broken parts after adding zoom module</s>
 - document different services and directives
 
 
