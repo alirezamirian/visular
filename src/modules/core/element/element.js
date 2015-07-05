@@ -119,7 +119,7 @@
                     })
                     .onDrag(function(evt){
                         diagramController.drag
-                            .to(g.point(this.draggedPosition.x,this.draggedPosition.y), scope.model, evt);
+                            .to(diagramController.relativePoint(g.point(this.draggedPosition.x,this.draggedPosition.y)), scope.model, evt);
                     });
             }
         }
