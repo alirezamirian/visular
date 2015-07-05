@@ -38,14 +38,14 @@ angular.module("visular.guideline", [])
  *  </<vz-diagram>
  * </hljs>
  */
-    .directive("vzGuideline", function vzGuidelineDirective(VzGuidelineFactory){
+    .directive("vzGuideline", function vzGuidelineDirective(VzGuidelineFactory, vzSvgUtils){
         var overlayTemplate =
             '<div class="vz-guideline"' +
             '   ng-repeat="guideline in guidelines"' +
             '   ng-class="guideline.isHorizontal() ? \'vz-guideline-h\' : \'vz-guideline-v\'"' +
             '   ng-style="{' +
-            '       top: guideline.isHorizontal() ? guideline.level : 0,' +
-            '       left: !guideline.isHorizontal() ? guideline.level : 0}"></div>';
+            '       top: guideline.isHorizontal() ? transform(0,guideline.level).y : 0,' +
+            '       left: !guideline.isHorizontal() ? transform(guideline.level,0).x : 0}"></div>';
         return{
             restrict: "A",
             require: "vzDiagram",
@@ -71,6 +71,9 @@ angular.module("visular.guideline", [])
                         element.getBBox()
                     );
                     scope.guidelines = guidelineSystem.activeGuidelines;
+                    scope.transform = function(x,y){
+                        return vzSvgUtils.transformPoint(x,y,diagramController.getCTM());
+                    }
                 }
                 function movementFinished(){
                     delete guidelineSystem;
