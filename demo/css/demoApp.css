@@ -51,3 +51,19 @@
     transform: scale(0);
     opacity: 0;
 }
+
+.demo-diagram-footer{
+    background: rgba(63, 81, 181,.1);
+    border-top: rgba(0,0,0,.15) solid 1px;
+    padding: 0 5px;
+}
+
+.demo-zoomCtrl .md-button{
+    font-family: "Lucida Console";
+    font-size: 20px;
+    min-width: 20px;
+    line-height: 30px;
+    height: 30px;
+    margin: 0 4px;
+    border-radius: 50%;
+}

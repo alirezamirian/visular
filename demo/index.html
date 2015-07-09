@@ -35,12 +35,6 @@
         <div ng-if="!diagram.selectedItem" flex
              layout="column" layout-align="start center" layout-margin
              class="demo-placeholder">
-            <div layout="row" layout-fill>
-                <md-slider flex ng-model="ctrl.zoom" ng-model-options="{getterSetter: true}"
-                           min=".1" max="5" step=".2"></md-slider>
-            </div>
-            <input ng-model="diagram.pan.x" type="number" />
-            <input ng-model="diagram.pan.y" type="number" />
             <div flex layout="column" layout-align="center">No Item Selected</div>
         </div>
         <div layout="column" layout-margin
@@ -102,6 +96,21 @@
                 <md-button class="md-raised md-fab md-mini left">+</md-button>
             </div>
         </vz-diagram>
+        <div class="demo-diagram-footer" layout="row">
+            <span flex></span>
+            <div layout="row" layout-align="start center" flex="30" class="demo-zoomCtrl">
+                <md-button
+                        class="md-accent"
+                        ng-click="(ctrl.zoom() >.2) && ctrl.zoom(ctrl.zoom()-.2)">-</md-button>
+                <md-slider
+                        flex ng-model="ctrl.zoom" class="md-primary" ng-model-options="{getterSetter: true}"
+                        min=".1" max="5" step=".2"
+                        style="margin: -5px 0"></md-slider> <span style="padding: 0 0 0 5px;">{{(ctrl.zoom()*100).toFixed(2)}}%</span>
+                <md-button
+                        class="md-accent"
+                        ng-click="(ctrl.zoom() < 5) && ctrl.zoom(ctrl.zoom()+.2)">+</md-button>
+            </div>
+        </div>
     </div>
 
 </md-content>
