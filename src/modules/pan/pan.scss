@@ -5,6 +5,7 @@ vz-diagram.vz-pan svg{
 }
 vz-diagram.vz-pan{
   cursor: grab;
+  opacity: .9;
 }
 vz-diagram.vz-pan.vz-pan-active{
   cursor: grabbing;

@@ -44,16 +44,30 @@
                     init();
                     scope.$on("$destroy",cleanup);
 
+
+                    var panStartingPoint, startingPan;
                     function mousedownHanlder(event){
                         diagramCtrl.elem.addClass("vz-pan-active");
+                        panStartingPoint = {
+                            x: event.originalEvent.pageX,
+                            y: event.originalEvent.pageY
+                        };
+                        startingPan = {x: diagramCtrl.getCTM().e, y: diagramCtrl.getCTM().f};
                         $document.bind("mousemove", mouseMoveHandler);
                         $document.one("mouseup", function(){
                             diagramCtrl.elem.removeClass("vz-pan-active");
                             $document.unbind("mousemove", mouseMoveHandler);
-                        })
+                        });
                     }
                     function mouseMoveHandler(event){
-                        console.log("mousemove");
+                        var xDiff = event.originalEvent.pageX - panStartingPoint.x;
+                        var yDiff = event.originalEvent.pageY - panStartingPoint.y;
+                        var currentCTM = diagramCtrl.getCTM();
+                        scope.$apply(function(){
+                            currentCTM.e = startingPan.x + xDiff;
+                            currentCTM.f = startingPan.y + yDiff;
+                        });
+                        console.log("mousemove", xDiff, yDiff);
                     }
 
 
