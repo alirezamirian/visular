@@ -46,7 +46,7 @@ var config = {
     scssFiles: [
         'src/modules/**/*.scss',
     ],
-    outputDir: 'dist/visular-' + VERSION
+    outputDir: 'dist/'
 };
 
 var IS_RELEASE_BUILD = false;

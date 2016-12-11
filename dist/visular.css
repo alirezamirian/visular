@@ -1,0 +1,149 @@
+/*!
+ * Visular
+ * https://github.com/alirezamirian/visular
+ * @license MIT
+ * v0.0.1
+ */
+vz-diagram {
+  display: block;
+  position: relative;
+  overflow: hidden; }
+
+vz-diagram > svg {
+  width: 100%;
+  min-height: inherit;
+  display: inline-block; }
+
+vz-diagram .vz-element {
+  overflow: unset; }
+
+[vz-selected-item-overlay] {
+  width: 100px;
+  height: 80px;
+  position: absolute;
+  pointer-events: none; }
+
+[vz-selected-item-overlay] > * {
+  pointer-events: auto; }
+
+[vz-selected-item-overlay] {
+  border: 1px solid #939393;
+  box-sizing: border-box; }
+
+vz-resize-handle {
+  width: 5px;
+  height: 5px;
+  background: #fff;
+  border: 1px solid #a6a6a6; }
+
+vz-resize-handle[vz-overlay-handle="top left"] {
+  cursor: nw-resize; }
+
+vz-resize-handle[vz-overlay-handle="top"] {
+  cursor: n-resize; }
+
+vz-resize-handle[vz-overlay-handle="top right"] {
+  cursor: ne-resize; }
+
+vz-resize-handle[vz-overlay-handle="right"] {
+  cursor: e-resize; }
+
+vz-resize-handle[vz-overlay-handle="bottom right"] {
+  cursor: nwse-resize; }
+
+vz-resize-handle[vz-overlay-handle="bottom"] {
+  cursor: s-resize; }
+
+vz-resize-handle[vz-overlay-handle="bottom left"] {
+  cursor: sw-resize; }
+
+vz-resize-handle[vz-overlay-handle="left"] {
+  cursor: w-resize; }
+
+[vz-overlay-handle] {
+  position: absolute; }
+
+[vz-overlay-handle="top left"] {
+  top: 0;
+  left: 0;
+  -webkit-transform: translateX(-51%) translateY(-50%);
+          transform: translateX(-51%) translateY(-50%); }
+
+[vz-overlay-handle="top"] {
+  top: 0;
+  left: 50%;
+  -webkit-transform: translateX(-50%) translateY(-51%);
+          transform: translateX(-50%) translateY(-51%); }
+
+[vz-overlay-handle="top right"] {
+  top: 0;
+  right: 0;
+  -webkit-transform: translateX(50%) translateY(-50%);
+          transform: translateX(50%) translateY(-50%); }
+
+[vz-overlay-handle="right"] {
+  top: 50%;
+  right: 0;
+  -webkit-transform: translateX(50%) translateY(-50%);
+          transform: translateX(50%) translateY(-50%); }
+
+[vz-overlay-handle="bottom right"] {
+  bottom: 0;
+  right: 0;
+  -webkit-transform: translateX(50%) translateY(50%);
+          transform: translateX(50%) translateY(50%); }
+
+[vz-overlay-handle="bottom"] {
+  bottom: 0;
+  left: 50%;
+  -webkit-transform: translateX(-50%) translateY(50%);
+          transform: translateX(-50%) translateY(50%); }
+
+[vz-overlay-handle="bottom left"] {
+  bottom: 0;
+  left: 0;
+  -webkit-transform: translateX(-51%) translateY(50%);
+          transform: translateX(-51%) translateY(50%); }
+
+[vz-overlay-handle="left"] {
+  top: 50%;
+  left: 0;
+  -webkit-transform: translateX(-51%) translateY(-50%);
+          transform: translateX(-51%) translateY(-50%); }
+
+/*!
+ * Visular
+ * https://github.com/alirezamirian/visular
+ * @license MIT
+ * v0.0.1
+ */
+.vz-guideline {
+  position: absolute;
+  pointer-events: none;
+  border: 0 dashed #5bbba4; }
+
+.vz-guideline-h {
+  border-top-width: 1px;
+  width: 100%; }
+
+.vz-guideline-v {
+  border-left-width: 1px;
+  height: 100%; }
+
+/*!
+ * Visular
+ * https://github.com/alirezamirian/visular
+ * @license MIT
+ * v0.0.1
+ */
+vz-diagram.vz-pan svg {
+  pointer-events: none; }
+
+vz-diagram.vz-pan {
+  cursor: -webkit-grab;
+  cursor: grab;
+  opacity: 0.9; }
+
+vz-diagram.vz-pan.vz-pan-active {
+  cursor: -webkit-grabbing;
+  cursor: grabbing; }
