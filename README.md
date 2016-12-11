@@ -6,6 +6,7 @@ angular toolkit for diagramming. It just left its development too early, and nev
 it is actually my first thoughts and implementations left out for any developer who might be interested :) 
 take a look at the [demo](https://alirezamirian.github.io/visular/demo/)
 
+# Purpose
 The idea is to enable developer to add common diagramming functionality as much declaratively as
 possible. For example if you want to enable panning (while holding space key), you just add
 `vz-pan` directive into your `vz-diagram`, or you can enable zomming on wheel event by 
@@ -23,7 +24,7 @@ api exposed by core components of Visular such as `vz-diagram`. This way, any ot
 specific position guidelines and magnets) can be implemented with the same api.
 
 `vz-guideline` for example uses two basic api of the `vz-diagram`, `addOverlay()` and `addElementPositionInterceptor()` 
-to add guidelines and intercept position of elements while they are dragging around
+to add guidelines and intercept position of elements while they are dragging around.
 
 # Why?
 TODO
