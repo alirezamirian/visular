@@ -13,7 +13,7 @@ possible. For example if you want to enable panning (while holding space key), y
 (aka magnets) which helps user position elements aligned with each other. This can be added
 to a `vz-diagram` component simply by adding a `vz-guideline` directive.
 
-```
+``` html
    <vz-diagram vz-pan vz-zoom-on-wheel vz-guideline></vz-diagram>
 ```
 
