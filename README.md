@@ -18,7 +18,7 @@ to a `vz-diagram` component simply by adding a `vz-guideline` directive.
 ```
 
 While these kind of directives are meant to be shipped with Visular out of the box (in a modular structure),
-the design of the library must be in a way in which these utilities and directives are implemented completely on top of public 
+the design of the library must be in a way in which these utilities and directives are implemented completely on top of 
 api exposed by core components of Visular such as `vz-diagram`. This way, any other special case (such as domain 
 specific position guidelines and magnets) can be implemented with the same api.
 
