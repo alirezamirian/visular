@@ -6,7 +6,7 @@ angular toolkit for diagramming. It just left its development too early, and nev
 it is actually my first thoughts and implementations left out for any developer who might be interested :) 
 take a look at the [demo](https://alirezamirian.github.io/visular/demo/)
 
-The idea is to add common functionality to you designer in a declarative manner as much as 
+The idea is to enable developer to add common diagramming functionality as much declaratively as
 possible. For example if you want to enable panning (while holding space key), you just add
 `vz-pan` directive into your `vz-diagram`, or you can enable zomming on wheel event by 
 `vz-zoom-on-wheel`. Another common feature for diagramming environments is to have guide lines 
