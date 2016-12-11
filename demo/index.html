@@ -2,23 +2,25 @@
 <html ng-app="demoApp">
 <head lang="en">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Visular Demo</title>
 
 
+    <!-- Docs are served local and not from CDN, just for the sake of speed in dev-->
     <script src="lib/jquery-1.11.2.min.js"></script>
-    <script src="lib/angular-1.3.11/angular.js"></script>
-    <script src="lib/angular-1.3.11/angular-aria.js"></script>
-    <script src="lib/angular-1.3.11/angular-messages.js"></script>
-    <script src="lib/angular-1.3.11/angular-animate.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/angular-aria/angular-aria.min.js"></script>
+    <script src="lib/angular-animate/angular-animate.min.js"></script>
+    <script src="lib/angular-messages/angular-messages.min.js"></script>
 
-    <script src="lib/material/angular-material.js"></script>
+    <script src="lib/angular-material/angular-material.min.js"></script>
 
     <script src="lib/geometry.js"></script>
     <script src="../dist/visular-0.0.1/visular.js"></script>
     <script src="js/demoApp.ng.js"></script>
 
-
-    <link rel="stylesheet" href="lib/material/angular-material.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="lib/angular-material/angular-material.min.css" />
     <link rel="stylesheet" href="../dist/visular-0.0.1/visular.css" />
     <link rel="stylesheet" href="css/demoApp.css" />
 
@@ -26,95 +28,110 @@
 <body ng-controller="mainController as ctrl">
 
 <md-toolbar>
-    <h2 class="md-toolbar-tools">Visular Demo app</h2>
+    <h2 class="md-toolbar-tools">
+        <span>Visular Demo app</span>
+        <span flex></span>
+        <md-button ng-href="https://github.com/alirezamirian/visular.git" class="md-icon-button">
+            <md-icon md-svg-src="./assets/icons/github.svg"></md-icon>
+        </md-button>
+    </h2>
 </md-toolbar>
-<md-content layout="row" class="md-padding">
-    <div class="demo-inspector md-whiteframe-z1" layout-margin layout="column">
-        <md-subheader>Inspector</md-subheader>
-        <md-divider></md-divider>
-        <div ng-if="!diagram.selectedItem" flex
-             layout="column" layout-align="start center" layout-margin
-             class="demo-placeholder">
-            <div flex layout="column" layout-align="center">No Item Selected</div>
+<md-content class="md-padding">
+    <div layout="row" class="md-whiteframe-1dp">
+        <div class="demo-inspector" layout="column" hide-xs>
+            <md-subheader>Inspector</md-subheader>
+            <md-divider></md-divider>
+            <div ng-if="!diagram.selectedItem" flex
+                 layout="column" layout-align="start center"
+                 class="demo-placeholder">
+                <div flex layout="column" layout-align="center">No Item Selected</div>
+            </div>
+            <div layout="column" class="md-padding"
+                 ng-if="diagram.selectedItem" ng-form="ctrl.inspectorForm">
+                <md-input-container ng-if="diagram.selectedItem.name !== undefined">
+                    <label>Name</label>
+                    <input type="text" name="name"
+                           ng-model="diagram.selectedItem.name" />
+                    <div ng-messages="ctrl.inspectorForm.name.$error">
+                        <div ng-message="required">Unnamed elements are bad!</div>
+                    </div>
+                </md-input-container>
+                <md-input-container ng-if="ctrl.isElement(diagram.selectedItem)">
+                    <label>Width</label>
+                    <input required type="number" name="width" min="10" max="500"
+                           ng-model="diagram.selectedItem.size.width" />
+                    <div ng-messages="ctrl.inspectorForm.width.$error">
+                        <div ng-message="min">Man! This is too tiny!</div>
+                        <div ng-message="max">Giant element!</div>
+                    </div>
+                </md-input-container>
+                <md-input-container ng-if="ctrl.isElement(diagram.selectedItem)">
+
+                    <label>Height</label>
+                    <input type="number"
+                           ng-model="diagram.selectedItem.size.height" />
+                </md-input-container>
+                <!--<md-input-container>
+
+                    <label>X</label>
+                    <input type="number"
+                           ng-model="diagram.selectedItem.position.x" />
+                </md-input-container>
+                <md-input-container>
+
+                    <label>Y</label>
+                    <input type="number"
+                           ng-model="diagram.selectedItem.position.y" />
+                </md-input-container>-->
+            </div>
         </div>
-        <div layout="column" layout-margin
-             ng-if="diagram.selectedItem" ng-form="ctrl.inspectorForm">
-            <md-input-container ng-if="diagram.selectedItem.name !== undefined">
-                <label>Name</label>
-                <input type="text" name="name"
-                       ng-model="diagram.selectedItem.name" />
-                <div ng-messages="ctrl.inspectorForm.name.$error">
-                    <div ng-message="required">Unnamed elements are bad!</div>
-                </div>
-            </md-input-container>
-            <md-input-container ng-if="ctrl.isElement(diagram.selectedItem)">
-                <label>Width</label>
-                <input required type="number" name="width" min="10" max="500"
-                       ng-model="diagram.selectedItem.size.width" />
-                <div ng-messages="ctrl.inspectorForm.width.$error">
-                    <div ng-message="min">Man! This is too tiny!</div>
-                    <div ng-message="max">Giant element!</div>
-                </div>
-            </md-input-container>
-            <md-input-container ng-if="ctrl.isElement(diagram.selectedItem)">
-
-                <label>Height</label>
-                <input type="number"
-                       ng-model="diagram.selectedItem.size.height" />
-            </md-input-container>
-            <!--<md-input-container>
-
-                <label>X</label>
-                <input type="number"
-                       ng-model="diagram.selectedItem.position.x" />
-            </md-input-container>
-            <md-input-container>
-
-                <label>Y</label>
-                <input type="number"
-                       ng-model="diagram.selectedItem.position.y" />
-            </md-input-container>-->
-        </div>
-    </div>
-    <div flex layout-margin class="md-whiteframe-z1">
-        <md-subheader>Designer</md-subheader>
         <md-divider></md-divider>
-        <vz-diagram
-                class="demo-diagram"
-                vz-diagram-model="ctrl.diagram"
-                vz-diagram-controller="diagram"
-                vz-guideline
-                vz-zoom-on-wheel
-                vz-zoom-getter-setter="ctrl.zoom"
-                vz-pan
-                vz-resize-handles>
-           <!-- <div vz-selected-item-overlay class="md-whiteframe-z4 custom-overlay-1"
-                 ng-class="{'active': diagram.selectedItem}">
-                <md-button class="md-raised md-fab md-mini top">+</md-button>
-                <md-button class="md-raised md-fab md-mini right">+</md-button>
-                <md-button class="md-raised md-fab md-mini bottom">+</md-button>
-                <md-button class="md-raised md-fab md-mini left">+</md-button>
-            </div>-->
-        </vz-diagram>
-        <div class="demo-diagram-footer" layout="row">
-            <span flex></span>
-            <div layout="row" layout-align="start center" flex="30" class="demo-zoomCtrl">
-                <md-button
-                        class="md-accent"
-                        ng-click="(ctrl.zoom() >.2) && ctrl.zoom(ctrl.zoom()-.2)">-</md-button>
-                <md-slider
-                        flex ng-model="ctrl.zoom" class="md-primary" ng-model-options="{getterSetter: true}"
-                        min=".1" max="5" step=".2"
-                        style="margin: -5px 0"></md-slider> <span style="padding: 0 0 0 5px;">{{(ctrl.zoom()*100).toFixed(2)}}%</span>
-                <md-button
-                        class="md-accent"
-                        ng-click="(ctrl.zoom() < 5) && ctrl.zoom(ctrl.zoom()+.2)">+</md-button>
+        <div flex>
+            <md-subheader>Designer</md-subheader>
+            <md-divider></md-divider>
+            <vz-diagram
+                    class="demo-diagram"
+                    vz-diagram-model="ctrl.diagram"
+                    vz-diagram-controller="diagram"
+                    vz-guideline
+                    vz-zoom-on-wheel
+                    vz-zoom-getter-setter="ctrl.zoom"
+                    vz-pan
+                    vz-resize-handles>
+                <!-- <div vz-selected-item-overlay class="md-whiteframe-4dp custom-overlay-1"
+                      ng-class="{'active': diagram.selectedItem}">
+                     <md-button class="md-raised md-fab md-mini top">+</md-button>
+                     <md-button class="md-raised md-fab md-mini right">+</md-button>
+                     <md-button class="md-raised md-fab md-mini bottom">+</md-button>
+                     <md-button class="md-raised md-fab md-mini left">+</md-button>
+                 </div>-->
+            </vz-diagram>
+            <div class="demo-diagram-footer" layout="row" layout-align="start center">
+                <md-button class="md-icon-button">
+                    <md-icon>keyboard</md-icon>
+                    <md-tooltip>Hold <b md-colors=":: {color: 'accent-200'}">space</b> to pan</md-tooltip>
+                </md-button>
+                <span flex></span>
+                <div flex layout="row" layout-align="start center" class="demo-zoomCtrl">
+                    <md-button
+                            class="md-accent md-icon-button"
+                            ng-click="(ctrl.zoom() >.2) && ctrl.zoom(ctrl.zoom()-.2)">
+                        <md-icon>remove</md-icon>
+                    </md-button>
+                    <md-slider
+                            flex ng-model="ctrl.zoom" class="md-primary" ng-model-options="{getterSetter: true}"
+                            min=".1" max="5" step=".2"
+                            style="margin: -5px 0"></md-slider> <span style="padding: 0 0 0 5px;">{{(ctrl.zoom()*100).toFixed(2)}}%</span>
+                    <md-button
+                            class="md-accent md-icon-button"
+                            ng-click="(ctrl.zoom() < 5) && ctrl.zoom(ctrl.zoom()+.2)">
+                        <md-icon>add</md-icon>
+                    </md-button>
+                </div>
             </div>
         </div>
     </div>
 
 </md-content>
-
-
 </body>
 </html>

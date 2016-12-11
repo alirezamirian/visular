@@ -58,12 +58,7 @@
     padding: 0 5px;
 }
 
-.demo-zoomCtrl .md-button{
-    font-family: "Lucida Console";
-    font-size: 20px;
-    min-width: 20px;
-    line-height: 30px;
-    height: 30px;
-    margin: 0 4px;
-    border-radius: 50%;
+.demo-zoomCtrl {
+    max-width: 300px;
+    min-width: 250px!important;
 }
