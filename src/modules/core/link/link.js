@@ -68,6 +68,22 @@
                     return "M " + points.map(function(point){
                             return point.x + " " + point.y;
                         }).join(" ");
+                };
+
+
+                init();
+                scope.$on("$destroy", cleanup);
+
+                function init(){
+                    elem.bind("mouseup", selectElement);
+                }
+                function cleanup(){
+                    elem.unbind("mouseup", selectElement);
+                }
+                function selectElement(){
+                    scope.$apply(function(){
+                        diagramController.select(scope.model);
+                    });
                 }
                 function updateTargetArrow(){
                     if(scope.startPoint){

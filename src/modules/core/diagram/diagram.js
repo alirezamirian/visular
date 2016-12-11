@@ -25,13 +25,13 @@
             }
         }
     }
-    function vzSelectedItemOverlayDirective(vzSvgUtils){
+    function vzSelectedItemOverlayDirective(vzSvgUtils, VzElementModel){
         return{
             restrict: "A",
             require: '^vzDiagram',
             link: function(scope, elem, attrs, diagramController){
                 scope.$watch(selectedItem, function(selectedItem){
-                    selectedItem ? elem.show() : elem.hide();
+                    (selectedItem && selectedItem instanceof VzElementModel) ? elem.show() : elem.hide();
                 });
                 scope.$watch(position, setPosition, true);
                 scope.$watch(size, setSize, true);
