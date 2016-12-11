@@ -22,6 +22,9 @@ the design of the library must be such that these utilities and directives are i
 api exposed by core components of Visular such as `vz-diagram`. This way, any other special case (such as domain 
 specific position guidelines and magnets) can be implemented with the same api.
 
+`vz-guideline` for example uses two basic api of the `vz-diagram`, `addOverlay()` and `addElementPositionInterceptor()` 
+to add guidelines and intercept position of elements while they are dragging around
+
 # Why?
 TODO
 # Features
