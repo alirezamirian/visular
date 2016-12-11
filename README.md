@@ -1,7 +1,7 @@
 Visular is a javascript diagramming toolkit based on AngularJS
 
 # IMPORTANT:
-I started writing a Visular about two years ago, as a declarative and extensible
+I started writing Visular about two years ago, as a declarative and extensible
 angular toolkit for diagramming. It just left its development too early, but here is my 
 first thoughts and implementations left out for any developer who might be interested :) 
 take a look at the [demo](https://alirezamirian.github.io/visular/demo/)
@@ -18,7 +18,7 @@ to a `vz-diagram` component simply by adding a `vz-guideline` directive.
 ```
 
 While these kind of directives are meant to be shipped with Visular out of the box (in a modular structure),
-the design of the library must be such that these utilities and directives are implemented completely on top of public 
+the design of the library must be in a way in which these utilities and directives are implemented completely on top of public 
 api exposed by core components of Visular such as `vz-diagram`. This way, any other special case (such as domain 
 specific position guidelines and magnets) can be implemented with the same api.
 
