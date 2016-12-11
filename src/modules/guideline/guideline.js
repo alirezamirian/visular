@@ -82,7 +82,6 @@ angular.module("visular.guideline", [])
                     }
                 }
                 function movementFinished(){
-                    delete guidelineSystem;
                     scope.guidelines = [];
                 }
                 function positionInterceptor(pointToMove){
