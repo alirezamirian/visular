@@ -47,7 +47,7 @@
                     <div ng-message="required">Unnamed elements are bad!</div>
                 </div>
             </md-input-container>
-            <md-input-container>
+            <md-input-container ng-if="ctrl.isElement(diagram.selectedItem)">
                 <label>Width</label>
                 <input required type="number" name="width" min="10" max="500"
                        ng-model="diagram.selectedItem.size.width" />
@@ -56,7 +56,7 @@
                     <div ng-message="max">Giant element!</div>
                 </div>
             </md-input-container>
-            <md-input-container>
+            <md-input-container ng-if="ctrl.isElement(diagram.selectedItem)">
 
                 <label>Height</label>
                 <input type="number"
@@ -88,13 +88,13 @@
                 vz-zoom-getter-setter="ctrl.zoom"
                 vz-pan
                 vz-resize-handles>
-            <div vz-selected-item-overlay class="md-whiteframe-z4 custom-overlay-1"
+           <!-- <div vz-selected-item-overlay class="md-whiteframe-z4 custom-overlay-1"
                  ng-class="{'active': diagram.selectedItem}">
                 <md-button class="md-raised md-fab md-mini top">+</md-button>
                 <md-button class="md-raised md-fab md-mini right">+</md-button>
                 <md-button class="md-raised md-fab md-mini bottom">+</md-button>
                 <md-button class="md-raised md-fab md-mini left">+</md-button>
-            </div>
+            </div>-->
         </vz-diagram>
         <div class="demo-diagram-footer" layout="row">
             <span flex></span>

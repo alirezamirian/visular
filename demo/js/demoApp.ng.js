@@ -49,4 +49,8 @@ angular.module("demoApp", ['visular', 'ngMaterial', 'ngMessages'])
         this.diagram.addLink(userTask1, userTask2);
         this.diagram.addLink(userTask2, endNoneEvent);
 
+
+        this.isElement = function(item){
+            return item instanceof VzElementModel;
+        }
     })
