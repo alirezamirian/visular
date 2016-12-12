@@ -2,8 +2,8 @@ Visular is a javascript diagramming toolkit based on AngularJS
 
 # IMPORTANT:
 I started writing Visular about two years ago, as a declarative and extensible
-angular toolkit for diagramming. It just left its development too early, and never published it until I watched [this video](https://www.youtube.com/watch?v=0SARbwvhupQ&feature=youtu.be) and decided to put it here as it is!
-it is actually my first thoughts and implementations left out for any developer who might be interested :) 
+angular toolkit for diagramming. I left its development too early, and never published it until I watched [this video](https://www.youtube.com/watch?v=0SARbwvhupQ&feature=youtu.be) and decided to put it here as it is!
+it is actually my first thoughts and implementations left out for any developer who might be interested :)
 take a look at the [demo](https://alirezamirian.github.io/visular/demo/)
 
 # Purpose
